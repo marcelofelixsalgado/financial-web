@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Financial App</title>
+
+        <style>
+            h2 {
+                color: #c9c9c9;
+                font-size: 22px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Financial - Balance</h2>
+        <form id="formSubmit" method="post" action="/login">
+            <table id="formlogintable">
+                <tr>
+                    <td>Nome:</td>
+                    <td><input id="name" type="text" name="name" /></td>
+                </tr>
+                <tr>
+                    <td>Senha:</td>
+                    <td><input id="password" type="password" name="password" /></td>
+                </tr>
+                <tr>
+                    <td><input id="btnSubmit" type="button" onclick="formSubmit.submit()" value="Ok" /></td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>
