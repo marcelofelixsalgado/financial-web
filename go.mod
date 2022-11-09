@@ -1,3 +1,3 @@
-module marcelofelixsalgado/financial-balance-web
+module marcelofelixsalgado/financial-web
 
 go 1.19

@@ -2,16 +2,17 @@ version: '3'
 
 services: 
 
-  app:
+  web:
     build:
       dockerfile: Dockerfile
       context: .
-    container_name: financial-balance-web
+    image: marcelofelixsalgado/financial-web
+    container_name: financial-web
     ports: 
       - "8080:8080"
     networks: 
-      - financial-app-network
+      - financial-network
 
 networks: 
-  financial-app-network:
+  financial-network:
     driver: bridge

@@ -1,2 +1,2 @@
-# financial-balance-web
-A temporary web application that display balance information
+# financial-web
+A temporary web application that display financial information
