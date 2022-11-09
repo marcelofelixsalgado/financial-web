@@ -10,23 +10,6 @@ services:
     ports: 
       - "8080:8080"
     networks: 
-      - financial-app-network    
-    depends_on: 
-       - db
-
-  db:
-    image: mysql:5.7
-    command: --innodb-use-native-aio=0
-    container_name: financial-balance-db
-    restart: always
-    tty: true
-    volumes: 
-      - ./dump:/docker-entrypoint-initdb.d
-      - ./mysql:/var/lib/mysql
-    environment: 
-      - MYSQL_DATABASE=financial_balance_db
-      - MYSQL_ROOT_PASSWORD=root
-    networks: 
       - financial-app-network
 
 networks: 
