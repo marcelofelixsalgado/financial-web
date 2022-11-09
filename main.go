@@ -8,61 +8,20 @@ import (
 )
 
 var templates *template.Template
-var port = ":8000"
+var port = ":8080"
 
-type User struct {
-	name     string
-	password string
-}
+var title = "Saldo do mês: Outubro"
+var updatedAt = "08/11/2022"
 
-var users = []User{
-	{
-		name: "marcelo", password: "marcelo",
-	},
-	{
-		name: "josiane", password: "josi1977",
-	},
-}
-
-type Balance struct {
-	Name   string
-	Limit  float64
-	Actual float64
-}
-
-var Balances = []Balance{
-	{Name: "Açougue", Limit: 400, Actual: 250},
-	{Name: "Alimentação", Limit: 700, Actual: 0},
-	{Name: "Casa", Limit: 300, Actual: 0},
-	{Name: "Cabeleleira/Manicure", Limit: 400, Actual: 0},
-	{Name: "Investimento de carreira", Limit: 200, Actual: 0},
-	{Name: "Consultório", Limit: 200, Actual: 0},
-	{Name: "Desconhecido", Limit: 200, Actual: 0},
-	{Name: "Diversos", Limit: 600, Actual: 0},
-	{Name: "Farmácia", Limit: 1000, Actual: 0},
-	{Name: "Mercado", Limit: 1600, Actual: 0},
-	{Name: "Padaria", Limit: 600, Actual: 0},
-	{Name: "Papelaria", Limit: 200, Actual: 0},
-	{Name: "Perfumaria", Limit: 200, Actual: 0},
-	{Name: "Presente", Limit: 300, Actual: 0},
-	{Name: "Roupas", Limit: 500, Actual: 0},
-	{Name: "Transporte", Limit: 600, Actual: 0},
+type pageContent struct {
+	Title     string
+	Balances  []balanceOut
+	Total     balanceOut
+	UpdatedAt string
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
 	templates.ExecuteTemplate(w, "home.html", nil)
-}
-
-func checkCredentials(name string, password string) bool {
-	for _, value := range users {
-		if value.name == name {
-			if value.password == password {
-				return true
-			}
-		}
-	}
-	fmt.Println("Usuario invalido")
-	return false
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -94,7 +53,17 @@ func invalidUser(w http.ResponseWriter, r *http.Request) {
 
 func balance(w http.ResponseWriter, r *http.Request) {
 
-	templates.ExecuteTemplate(w, "balance.html", Balances)
+	balancesOut := getBalances()
+	totalOut := getTotal()
+
+	content := pageContent{
+		Title:     title,
+		Balances:  balancesOut,
+		Total:     totalOut,
+		UpdatedAt: updatedAt,
+	}
+
+	templates.ExecuteTemplate(w, "balance.html", content)
 }
 
 func setupRoutes() {

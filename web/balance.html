@@ -11,33 +11,59 @@
                 font-size: 22px;
                 font-family: Arial, Helvetica, sans-serif;
             }
+            h3 {
+                color: gray;
+                font-size: 16px;
+                font-family: Arial, Helvetica, sans-serif;
+            }            
             th, td {
              padding: 5px;
+             font-family: Arial, Helvetica, sans-serif; 
+             font-size:small;
             }
             th {
                 text-align: center; 
-                background-color: #c9c9c9;
+                background-color: rgb(143, 172, 218);
+            }
+            p {
+                font-family: Arial, Helvetica, sans-serif; 
+                font-size:small;
             }
         </style>
     </head>
     <body>
-        <h2>Saldo do mês</h2>
+        <h2>Financial App</h2>
+        <h3>{{.Title}}</h3>
 
-        <table border="1" style="border-collapse: collapse;" width="400" cellpadding="1">
+        <table style="border-width: 1; border-collapse: collapse;" width="500px" cellpadding="1">
             <tr>
                 <th>Despesa</th>
                 <th>Limite mensal</th>
                 <th>Gasto real</th>
+                <th>Diferença</th>
             </tr>
-            {{range .}}
-                <tr>
-                    <td>{{.Name}}</td>
-                    <td>{{.Limit}}</td>
-                    <td>{{.Actual}}</td>
+            {{$odd := true}}
+            {{range .Balances}}
+                {{if $odd}}
+                    <tr style="background-color: #ededed;">
+                {{else}}
+                    <tr style="background-color: white;"></tr>
+                {{end}}
+                {{$odd = not $odd}}                
+                    <td style="width: 140px;">{{.Name}}</td>
+                    <td style="width: 120px;text-align: right; color: gray;">{{.Limit}}</td>
+                    <td style="width: 120px;text-align: right;">{{.Actual}}</td>
+                    <td style="width: 120px;text-align: right;">{{.Difference}}</td>
                 </tr>
             {{end}}
-        </table>
-        <hr/>
-        <a href="/">Voltar</a>
+            <tr style="background-color: rgb(187, 212, 187)">
+                <td style="width: 140px">{{.Total.Name}}</td>
+                <td style="width: 120px;text-align: right; color: gray;">{{.Total.Limit}}</td>
+                <td style="width: 120px;text-align: right;">{{.Total.Actual}}</td>
+                <td style="width: 120px;text-align: right;">{{.Total.Difference}}</td>
+            </tr>
+        </table>        
+        <p><i>Atualizado em: {{.UpdatedAt}}</i></p>
+        <p><a href="/">Voltar</a></p>
     </body>
 </html>

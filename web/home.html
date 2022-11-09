@@ -11,12 +11,17 @@
                 font-size: 22px;
                 font-family: Arial, Helvetica, sans-serif;
             }
+            th, td {
+             padding: 1px;
+             font-family: Arial, Helvetica, sans-serif; 
+             font-size:small;
+            }            
         </style>
     </head>
     <body>
-        <h2>Financial - Balance</h2>
+        <h2>Financial App</h2>
         <form id="formSubmit" method="post" action="/login">
-            <table id="formlogintable">
+            <table>
                 <tr>
                     <td>Nome:</td>
                     <td><input id="name" type="text" name="name" /></td>
@@ -26,7 +31,8 @@
                     <td><input id="password" type="password" name="password" /></td>
                 </tr>
                 <tr>
-                    <td><input id="btnSubmit" type="button" onclick="formSubmit.submit()" value="Ok" /></td>
+                    <td>&nbsp;</td>
+                    <td style="text-align: left;"><input id="btnSubmit" type="button" onclick="formSubmit.submit()" value="Ok" /></td>
                 </tr>
             </table>
         </form>
