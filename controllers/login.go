@@ -6,5 +6,5 @@ import (
 )
 
 func LoadLoginScreen(w http.ResponseWriter, r *http.Request) {
-	utils.ExecuteTemplate(w, "home.html", nil)
+	utils.ExecuteTemplate(w, "login.html", nil)
 }

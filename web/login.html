@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Financial App</title>
+        <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
+    </head>
+    <body>
+        <div class="container-login">
+            <div>
+                <form id="formSubmit" class="financial-form" method="post" action="/login">
+                    <span>Sign in to your Financial App account</span>
+                    <div>
+                        <input id="name" type="text" name="name" placeholder="Type your name" required="required" />
+                    </div>
+                    <div>
+                        <input id="password" type="password" name="password" placeholder="Type your password" required="required" />
+                    </div>
+                    <button type="submit" id="btnSubmit" class="btn-financial" onclick="formSubmit.submit()">Sign in</button>
+                    Create an accout: <a href="#">Sign up</a>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
