@@ -17,6 +17,13 @@ type Route struct {
 func SetupRoutes() *mux.Router {
 	router := mux.NewRouter()
 
+	// user routes
+	for _, route := range userRoutes {
+		router.HandleFunc(route.URI,
+			middlewares.Logger(
+				route.Function)).Methods(route.Method)
+	}
+
 	// login routes
 	for _, route := range loginRoutes {
 		router.HandleFunc(route.URI,
