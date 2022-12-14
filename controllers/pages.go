@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func LoadLoginScreen(w http.ResponseWriter, r *http.Request) {
+func LoadLoginPage(w http.ResponseWriter, r *http.Request) {
 	utils.ExecuteTemplate(w, "login.html", nil)
 }
 

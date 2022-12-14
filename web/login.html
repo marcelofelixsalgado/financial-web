@@ -9,18 +9,20 @@
     <body>
         <div class="container-login">
             <div>
-                <form id="formSubmit" class="financial-form" method="post" action="/login">
+                <form id="login-form" class="financial-form">
                     <span>Sign in to your Financial App account</span>
                     <div>
-                        <input id="name" type="text" name="name" placeholder="Type your name" required="required" />
+                        <input id="email" type="text" name="name" placeholder="Type your email" required="required" />
                     </div>
                     <div>
                         <input id="password" type="password" name="password" placeholder="Type your password" required="required" />
                     </div>
-                    <button type="submit" id="btnSubmit" class="btn-financial" onclick="formSubmit.submit()">Sign in</button>
+                    <button type="submit" id="btnSubmit" class="btn-financial">Sign in</button>
                     Create an accout: <a href="/register">Sign up</a>
                 </form>
             </div>
         </div>
+        <script src="/assets/js/jquery-3.6.1.min.js"></script>
+        <script src="/assets/js/login.js"></script>
     </body>
 </html>
