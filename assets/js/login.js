@@ -7,8 +7,8 @@ function userLogin(event) {
         url: "/login",
         method: "POST",
         data: {
-            name: $('#email').val(),
-            email: $('#password').val(),
+            email: $('#email').val(),
+            password: $('#password').val(),
         }
     }).done(function() {
         window.location = "/home";

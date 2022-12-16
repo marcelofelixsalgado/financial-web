@@ -1,17 +1,9 @@
 package main
 
-import (
-	"marcelofelixsalgado/financial-web/configs"
-	"marcelofelixsalgado/financial-web/utils"
-)
+import "marcelofelixsalgado/financial-web/api"
 
 func main() {
-	// Load environment variables
-	configs.Load()
-
-	// Load HTML templates
-	utils.LoadTemplates()
-
 	// Start HTTP Server
-	startServer()
+	router := api.NewServer()
+	api.Run(router)
 }
