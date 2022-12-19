@@ -48,7 +48,8 @@ func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 
 	// Return error response
 	if httpStatusCode != http.StatusCreated {
-		responses.JSON(w, faultMessage.GetMessage().HttpStatusCode, faultMessage)
+		responses.JSON(w, httpStatusCode, faultMessage)
+		return
 	}
 
 	// Response ok

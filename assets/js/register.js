@@ -11,12 +11,21 @@ function userRegister(event) {
             phone: $('#phone').val(),
             email: $('#email').val(),
         }
-    }).done(function() {
-        $.ajax({
-            url: "/register/credentials",
-            method: "POST",
-        })
-        window.location = `/register/credentials`;
+    }).done(function(data) {
+        
+        // $.ajax({
+        //     url: "/register/credentials",
+        //     method: "GET",
+        //     data: {
+        //         user_id: data.id,
+        //     }            
+        // }).done(function(error) {
+        //     alert("OK!")
+        // }).fail(function(error) {
+        //     alert("erro!")
+        // })
+
+        window.location = `/register/credentials?user_id=`+data.id;
     }).fail(function(error) {
         alert("erro!")
     });    

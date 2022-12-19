@@ -4,6 +4,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers"
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
+	"marcelofelixsalgado/financial-web/api/controllers/home"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/middlewares"
 	"net/http"
@@ -38,13 +39,15 @@ import (
 type Routes struct {
 	userCredentialRoutes credentials.UserCredentialsRoutes
 	userRoutes           user.UserRoutes
+	homeRoutes           home.HomeRoutes
 	healthRoutes         health.HealthRoutes
 }
 
-func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, healthRoutes health.HealthRoutes) *Routes {
+func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes, healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
 		userCredentialRoutes: userCredentialRoutes,
 		userRoutes:           userRoutes,
+		homeRoutes:           homeRoutes,
 		healthRoutes:         healthRoutes,
 	}
 }
@@ -59,6 +62,9 @@ func (routes *Routes) SetupRoutes() *mux.Router {
 	// user routes
 	setupRoute(router, routes.userRoutes.UserRouteMapping())
 
+	// home routes
+	setupRoute(router, routes.homeRoutes.HomeRouteMapping())
+
 	// health routes
 	setupRoute(router, routes.healthRoutes.HealthRouteMapping())
 
@@ -70,18 +76,15 @@ func (routes *Routes) SetupRoutes() *mux.Router {
 }
 
 func setupRoute(router *mux.Router, routes []controllers.Route) {
-	// router := mux.NewRouter()
-
 	for _, route := range routes {
-		// if route.RequiresAuthentication {
-		// 	router.HandleFunc(route.URI,
-		// 		middlewares.Logger(
-		// 			middlewares.Authenticate(route.Function))).Methods(route.Method)
-		// } else {
-		router.HandleFunc(route.URI,
-			middlewares.Logger(route.Function)).Methods(route.Method)
+		if route.RequiresAuthentication {
+			router.HandleFunc(route.URI,
+				middlewares.Logger(
+					middlewares.Authenticate(route.Function))).Methods(route.Method)
+		} else {
+			router.HandleFunc(route.URI,
+				middlewares.Logger(route.Function)).Methods(route.Method)
 
-		// }
+		}
 	}
-	// return router
 }

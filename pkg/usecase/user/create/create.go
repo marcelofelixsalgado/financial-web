@@ -3,7 +3,9 @@ package create
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
+	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
 	"net/http"
 )
@@ -27,7 +29,8 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserDto) (OutputCre
 		return OutputCreateUserDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	response, err := http.Post("http://localhost:8081/v1/users", "application/json", bytes.NewBuffer(user))
+	url := fmt.Sprintf("%s/v1/users", configs.UserApiURL)
+	response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	if err != nil {
 		return OutputCreateUserDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
@@ -40,7 +43,7 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserDto) (OutputCre
 	}
 
 	if response.StatusCode >= 400 {
-		var faultMessage faults.IFaultMessage
+		var faultMessage faults.FaultMessage
 		err := json.Unmarshal(bodyBytes, &faultMessage)
 		if err != nil {
 			return OutputCreateUserDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err

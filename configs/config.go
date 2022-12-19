@@ -9,8 +9,17 @@ import (
 )
 
 var (
-	// HTTP Port to expose the API
-	HttpPort = 0
+	// HTTP Port to expose the Web API
+	WebHttpPort = 0
+
+	// User API address and port
+	UserApiURL = ""
+
+	// Used to authenticate the cookie
+	HashKey []byte
+
+	// Used to encrypt cookie data
+	BlockKey []byte
 )
 
 // Load global parameters from environment variables
@@ -21,8 +30,23 @@ func Load() {
 		log.Fatalf("Error trying to load the environment variables: %v", err)
 	}
 
-	HttpPort, err = strconv.Atoi(os.Getenv("HTTP_PORT"))
+	WebHttpPort, err = strconv.Atoi(os.Getenv("WEB_HTTP_PORT"))
 	if err != nil {
-		log.Fatalf("Could not find the HTTP_PORT environment variable: %v", err)
+		log.Fatalf("Could not find the WEB_HTTP_PORT environment variable: %v", err)
+	}
+
+	UserApiURL = os.Getenv("USER_API_URL")
+	if UserApiURL == "" {
+		log.Fatalf("Could not find the USER_API_URL environment variable: %v", err)
+	}
+
+	HashKey = []byte(os.Getenv("HASH_KEY"))
+	if len(HashKey) == 0 {
+		log.Fatalf("Could not find the HASH_KEY environment variable")
+	}
+
+	BlockKey = []byte(os.Getenv("BLOCK_KEY"))
+	if len(BlockKey) == 0 {
+		log.Fatalf("Could not find the BLOCK_KEY environment variable")
 	}
 }

@@ -14,5 +14,14 @@ func LoadUserRegisterPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoadUserRegisterCredentialsPage(w http.ResponseWriter, r *http.Request) {
-	utils.ExecuteTemplate(w, "register-credentials.html", nil)
+	r.ParseForm()
+	utils.ExecuteTemplate(w, "registercredentials.html", struct {
+		User_id string
+	}{
+		User_id: r.FormValue("user_id"),
+	})
+}
+
+func LoadUserHomePage(w http.ResponseWriter, r *http.Request) {
+	utils.ExecuteTemplate(w, "home.html", nil)
 }

@@ -3,7 +3,9 @@ package login
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
+	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
 	"net/http"
 )
@@ -26,7 +28,8 @@ func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto) (OutputUserLo
 		return OutputUserLoginDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	response, err := http.Post("http://localhost:8081/v1/login", "application/json", bytes.NewBuffer(user))
+	url := fmt.Sprintf("%s/v1/login", configs.UserApiURL)
+	response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	if err != nil {
 		return OutputUserLoginDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
