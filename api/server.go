@@ -3,6 +3,10 @@ package api
 import (
 	"fmt"
 	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
+
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
@@ -10,12 +14,8 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"marcelofelixsalgado/financial-web/api/routes"
+	"marcelofelixsalgado/financial-web/api/utils"
 	"marcelofelixsalgado/financial-web/configs"
-	"marcelofelixsalgado/financial-web/utils"
-	"net/http"
-
-	"github.com/gorilla/mux"
-
 	userCreate "marcelofelixsalgado/financial-web/pkg/usecase/user/create"
 
 	userCredentialsCreate "marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"

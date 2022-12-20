@@ -5,12 +5,14 @@ import (
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
+	"marcelofelixsalgado/financial-web/api/utils"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 	"net/http"
 )
 
 type IUserCredentialsHandler interface {
+	LoadUserRegisterCredentialsPage(w http.ResponseWriter, r *http.Request)
 	CreateUserCredentials(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 }
@@ -25,6 +27,15 @@ func NewUserCredentialsHandler(createUseCase create.ICreateUseCase, loginUseCase
 		createUseCase: createUseCase,
 		loginUseCase:  loginUseCase,
 	}
+}
+
+func (userCredentialsHandler *UserCredentialsHandler) LoadUserRegisterCredentialsPage(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	utils.ExecuteTemplate(w, "registercredentials.html", struct {
+		User_id string
+	}{
+		User_id: r.FormValue("user_id"),
+	})
 }
 
 func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w http.ResponseWriter, r *http.Request) {

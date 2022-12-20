@@ -5,12 +5,13 @@ import (
 	"log"
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
+	"marcelofelixsalgado/financial-web/api/utils"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/create"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/delete"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/find"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/update"
-	"marcelofelixsalgado/financial-web/utils"
+
 	"net/http"
 	"strconv"
 

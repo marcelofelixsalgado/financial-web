@@ -75,8 +75,8 @@ func (routes *Routes) SetupRoutes() *mux.Router {
 	setupRoute(router, routes.healthRoutes.HealthRouteMapping())
 
 	// Setting the path for static files in assets folder
-	fileServer := http.FileServer(http.Dir("./assets/"))
-	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fileServer))
+	fileServer := http.FileServer(http.Dir("./web/assets/"))
+	router.PathPrefix("/web/assets/").Handler(http.StripPrefix("/web/assets/", fileServer))
 
 	return router
 }

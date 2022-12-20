@@ -33,7 +33,7 @@ func (userCredentialsRoutes *UserCredentialsRoutes) UserCredentialsRouteMapping(
 		{
 			URI:                    "/register/credentials",
 			Method:                 http.MethodGet,
-			Function:               controllers.LoadUserRegisterCredentialsPage,
+			Function:               userCredentialsRoutes.userCredentialsHandler.LoadUserRegisterCredentialsPage,
 			RequiresAuthentication: false,
 		},
 		{
