@@ -1,17 +1,17 @@
 package login
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"marcelofelixsalgado/financial-web/configs"
+	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
 	"net/http"
 )
 
 type ILoginUseCase interface {
-	Execute(InputUserLoginDto) (OutputUserLoginDto, faults.IFaultMessage, int, error)
+	Execute(InputUserLoginDto, *http.Request) (OutputUserLoginDto, faults.IFaultMessage, int, error)
 }
 
 type LoginUseCase struct {
@@ -21,7 +21,7 @@ func NewLoginUseCase() ILoginUseCase {
 	return &LoginUseCase{}
 }
 
-func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto) (OutputUserLoginDto, faults.IFaultMessage, int, error) {
+func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto, request *http.Request) (OutputUserLoginDto, faults.IFaultMessage, int, error) {
 	var outputUserLoginDto OutputUserLoginDto
 	user, err := json.Marshal(input)
 	if err != nil {
@@ -29,7 +29,8 @@ func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto) (OutputUserLo
 	}
 
 	url := fmt.Sprintf("%s/v1/login", configs.UserApiURL)
-	response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
+	// response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
+	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, user, false)
 	if err != nil {
 		return OutputUserLoginDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
@@ -42,7 +43,7 @@ func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto) (OutputUserLo
 	}
 
 	if response.StatusCode >= 400 {
-		var faultMessage faults.IFaultMessage
+		var faultMessage faults.FaultMessage
 		err := json.Unmarshal(bodyBytes, &faultMessage)
 		if err != nil {
 			return OutputUserLoginDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err

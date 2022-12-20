@@ -15,6 +15,9 @@ var (
 	// User API address and port
 	UserApiURL = ""
 
+	// Period API address and port
+	PeriodApiURL = ""
+
 	// Used to authenticate the cookie
 	HashKey []byte
 
@@ -38,6 +41,11 @@ func Load() {
 	UserApiURL = os.Getenv("USER_API_URL")
 	if UserApiURL == "" {
 		log.Fatalf("Could not find the USER_API_URL environment variable: %v", err)
+	}
+
+	PeriodApiURL = os.Getenv("PERIOD_API_URL")
+	if UserApiURL == "" {
+		log.Fatalf("Could not find the PERIOD_API_URL environment variable: %v", err)
 	}
 
 	HashKey = []byte(os.Getenv("HASH_KEY"))

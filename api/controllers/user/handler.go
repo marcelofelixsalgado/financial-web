@@ -39,7 +39,7 @@ func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Calling use case
-	output, faultMessage, httpStatusCode, err := userHandler.createUseCase.Execute(input)
+	output, faultMessage, httpStatusCode, err := userHandler.createUseCase.Execute(input, r)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -49,6 +49,7 @@ func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 	// Return error response
 	if httpStatusCode != http.StatusCreated {
 		responses.JSON(w, httpStatusCode, faultMessage)
+		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return
 	}
 

@@ -43,7 +43,7 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 	}
 
 	// Calling use case
-	output, faultMessage, httpStatusCode, err := userCredentialsHandler.createUseCase.Execute(input)
+	output, faultMessage, httpStatusCode, err := userCredentialsHandler.createUseCase.Execute(input, r)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -53,6 +53,7 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 	// Return error response
 	if httpStatusCode != http.StatusCreated {
 		responses.JSON(w, httpStatusCode, faultMessage)
+		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return
 	}
 
@@ -77,7 +78,7 @@ func (userCredentialsHandler *UserCredentialsHandler) Login(w http.ResponseWrite
 	}
 
 	// Calling use case
-	output, faultMessage, httpStatusCode, err := userCredentialsHandler.loginUseCase.Execute(input)
+	output, faultMessage, httpStatusCode, err := userCredentialsHandler.loginUseCase.Execute(input, r)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -86,7 +87,9 @@ func (userCredentialsHandler *UserCredentialsHandler) Login(w http.ResponseWrite
 
 	// Returning backend error response
 	if httpStatusCode != http.StatusOK {
-		responses.JSON(w, faultMessage.GetMessage().HttpStatusCode, faultMessage)
+		responses.JSON(w, httpStatusCode, faultMessage)
+		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		return
 	}
 
 	// Saving the cookie

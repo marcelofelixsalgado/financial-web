@@ -1,17 +1,17 @@
 package create
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"marcelofelixsalgado/financial-web/configs"
+	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
 	"net/http"
 )
 
 type ICreateUseCase interface {
-	Execute(InputCreateUserCredentialsDto) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error)
+	Execute(InputCreateUserCredentialsDto, *http.Request) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error)
 }
 
 type CreateUseCase struct {
@@ -21,7 +21,7 @@ func NewCreateUseCase() ICreateUseCase {
 	return &CreateUseCase{}
 }
 
-func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error) {
+func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto, request *http.Request) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error) {
 
 	var outputCreateUserCredentialsDto OutputCreateUserCredentialsDto
 	user, err := json.Marshal(input)
@@ -30,7 +30,8 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto)
 	}
 
 	url := fmt.Sprintf("%s/v1/users/%s/credentials", configs.UserApiURL, input.UserId)
-	response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
+	// response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
+	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, user, false)
 	if err != nil {
 		return OutputCreateUserCredentialsDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
@@ -43,7 +44,7 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto)
 	}
 
 	if response.StatusCode >= 400 {
-		var faultMessage faults.IFaultMessage
+		var faultMessage faults.FaultMessage
 		err := json.Unmarshal(bodyBytes, &faultMessage)
 		if err != nil {
 			return OutputCreateUserCredentialsDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err

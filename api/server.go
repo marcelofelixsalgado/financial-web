@@ -6,6 +6,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
+	"marcelofelixsalgado/financial-web/api/controllers/period"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"marcelofelixsalgado/financial-web/api/routes"
@@ -19,6 +20,12 @@ import (
 
 	userCredentialsCreate "marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
 	userCredentialsLogin "marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
+
+	periodCreate "marcelofelixsalgado/financial-web/pkg/usecase/periods/create"
+	periodDelete "marcelofelixsalgado/financial-web/pkg/usecase/periods/delete"
+	periodFind "marcelofelixsalgado/financial-web/pkg/usecase/periods/find"
+	periodList "marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
+	periodUpdate "marcelofelixsalgado/financial-web/pkg/usecase/periods/update"
 )
 
 func NewServer() *mux.Router {
@@ -34,10 +41,11 @@ func NewServer() *mux.Router {
 	userCredentialsRoutes := setupUserCredentialsRoutes()
 	userRoutes := setupUserRoutes()
 	homeRoutes := setupHomeRoutes()
+	periodRoutes := setupPeriodRoutes()
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(userCredentialsRoutes, userRoutes, homeRoutes, healthRoutes)
+	routes := routes.NewRoutes(userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, healthRoutes)
 
 	router := routes.SetupRoutes()
 	return router
@@ -77,6 +85,24 @@ func setupUserCredentialsRoutes() credentials.UserCredentialsRoutes {
 	userCredentialsRoutes := credentials.NewUserCredentialsRoutes(userCredentialsHandler)
 
 	return userCredentialsRoutes
+}
+
+func setupPeriodRoutes() period.PeriodRoutes {
+
+	// setup Use Cases (services)
+	createUseCase := periodCreate.NewCreatePeriodUseCase()
+	listUseCase := periodList.NewListPeriodUseCase()
+	findUseCase := periodFind.NewFindPeriodUseCase()
+	updateUseCase := periodUpdate.NewUpdatePeriodUseCase()
+	deleteUseCase := periodDelete.NewDeletePeriodUseCase()
+
+	// setup router handlers
+	periodHandler := period.NewPeriodHandler(createUseCase, listUseCase, findUseCase, updateUseCase, deleteUseCase)
+
+	// setup routes
+	periodRoutes := period.NewPeriodRoutes(periodHandler)
+
+	return periodRoutes
 }
 
 func setupHomeRoutes() home.HomeRoutes {

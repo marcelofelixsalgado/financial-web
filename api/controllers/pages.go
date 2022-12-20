@@ -25,3 +25,7 @@ func LoadUserRegisterCredentialsPage(w http.ResponseWriter, r *http.Request) {
 func LoadUserHomePage(w http.ResponseWriter, r *http.Request) {
 	utils.ExecuteTemplate(w, "home.html", nil)
 }
+
+// func LoadPeriodPage(w http.ResponseWriter, r *http.Request) {
+// 	utils.ExecuteTemplate(w, "period.html", nil)
+// }

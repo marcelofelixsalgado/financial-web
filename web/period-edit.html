@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Financial App - Period</title>
+        <link href="/assets/css/bootstrap.css" rel="stylesheet" />
+    </head>
+    <body>
+        {{ template "header" }}
+
+        <div class="container-fluid">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h3>Atualizar Período</h3>
+                    <div class="form-group">
+                        <label for="code">Código</label>
+                        <input type="text" class="form-control" id="code" name="code" required="required"
+                            placeholder="Insira o código do período" value="{{ .Code }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" name="name" required="required"
+                            placeholder="Insira o nome do período" value="{{ .Name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Ano</label>
+                        <input type="text" class="form-control" id="year" name="year" required="required"
+                            placeholder="Insira o ano do período" value="{{ .Year }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="start_date">Data de início</label>
+                        <input type="text" class="form-control" id="start_date" name="start_date" required="required"
+                            placeholder="Insira a data de início do período" value="{{ .StartDate }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">Data de término</label>
+                        <input type="text" class="form-control" id="end_date" name="end_date" required="required"
+                            placeholder="Insira a data de término do período" value="{{ .EndDate }}">
+                    </div>     
+                    <button id="update-period" class="btn btn-info" data-period-id="{{ .Id }}">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{ template "footer" }}
+        {{ template "scripts" }}
+        <script src="/assets/js/period.js"></script>
+    </body>
+</html>

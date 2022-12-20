@@ -5,6 +5,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
+	"marcelofelixsalgado/financial-web/api/controllers/period"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/middlewares"
 	"net/http"
@@ -40,14 +41,16 @@ type Routes struct {
 	userCredentialRoutes credentials.UserCredentialsRoutes
 	userRoutes           user.UserRoutes
 	homeRoutes           home.HomeRoutes
+	periodRoutes         period.PeriodRoutes
 	healthRoutes         health.HealthRoutes
 }
 
-func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes, healthRoutes health.HealthRoutes) *Routes {
+func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes, periodRoutes period.PeriodRoutes, healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
 		userCredentialRoutes: userCredentialRoutes,
 		userRoutes:           userRoutes,
 		homeRoutes:           homeRoutes,
+		periodRoutes:         periodRoutes,
 		healthRoutes:         healthRoutes,
 	}
 }
@@ -64,6 +67,9 @@ func (routes *Routes) SetupRoutes() *mux.Router {
 
 	// home routes
 	setupRoute(router, routes.homeRoutes.HomeRouteMapping())
+
+	// period routes
+	setupRoute(router, routes.periodRoutes.PeriodRouteMapping())
 
 	// health routes
 	setupRoute(router, routes.healthRoutes.HealthRouteMapping())

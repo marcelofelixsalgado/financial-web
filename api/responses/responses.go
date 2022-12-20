@@ -148,12 +148,12 @@ func buildMessageDetail(issue faults.Issue, description string, location Locatio
 	}
 }
 
-func JSON(w http.ResponseWriter, statusCode int, dados interface{}) {
+func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
 	if statusCode != http.StatusNoContent {
-		if err := json.NewEncoder(w).Encode(dados); err != nil {
+		if err := json.NewEncoder(w).Encode(data); err != nil {
 			log.Printf("Error trying to encode the output data: %v", err)
 		}
 	}
