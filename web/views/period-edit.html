@@ -31,12 +31,12 @@
                     <div class="form-group">
                         <label for="start_date">Data de início</label>
                         <input type="text" class="form-control" id="start_date" name="start_date" required="required"
-                            placeholder="Insira a data de início do período (DD/MM/YYYY)" value="{{ .StartDate }}">
+                            placeholder="Insira a data de início do período (DD/MM/YYYY)" value="{{ .StartDate.Format "02/01/2006" }}">
                     </div>
                     <div class="form-group">
                         <label for="end_date">Data de término</label>
                         <input type="text" class="form-control" id="end_date" name="end_date" required="required"
-                            placeholder="Insira a data de término do período (DD/MM/YYYY)" value="{{ .EndDate }}">
+                            placeholder="Insira a data de término do período (DD/MM/YYYY)" value="{{ .EndDate.Format "02/01/2006" }}">
                     </div>     
                     <button id="update-period" class="btn btn-info" data-period-id="{{ .Id }}">
                         Salvar Alterações

@@ -12,8 +12,8 @@
     <h1 class="display-4"> {{ .Code }} </h1>
     <p class="lead">Nome: {{ .Name }}</p>
     <p class="lead">Ano: {{ .Year }}</p>
-    <p class="lead">Data de início: {{ .StartDate }}</p>
-    <p class="lead">Data de término: {{ .EndDate }}</p>
+    <p class="lead">Data de início: {{ .StartDate.Format "02/01/2006" }}</p>
+    <p class="lead">Data de término: {{ .EndDate.Format "02/01/2006" }}</p>
     <hr class="my-4">
 {{ end }}
 

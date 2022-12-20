@@ -11,8 +11,8 @@ type InputPeriodDto struct {
 	code      string
 	name      string
 	year      int
-	startDate string
-	endDate   string
+	startDate time.Time
+	endDate   time.Time
 }
 
 func ValidateCreateRequestBody(inputCreatePeriodDto create.InputCreatePeriodDto) *responses.ResponseMessage {
@@ -56,29 +56,16 @@ func validateRequestBody(inputPeriodDto InputPeriodDto) *responses.ResponseMessa
 		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "year", "")
 	}
 
-	if inputPeriodDto.startDate == "" {
+	if inputPeriodDto.startDate.IsZero() {
 		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "start_date", "")
 	}
 
-	if inputPeriodDto.endDate == "" {
+	if inputPeriodDto.endDate.IsZero() {
 		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "end_date", "")
 	}
 
-	validDates := true
-	startDate, err := time.Parse(time.RFC3339, inputPeriodDto.startDate)
-	if err != nil {
-		validDates = false
-		responseMessage.AddMessageByIssue(faults.InvalidDateTimeValue, responses.Body, "start_date", inputPeriodDto.startDate)
-	}
-
-	endDate, err := time.Parse(time.RFC3339, inputPeriodDto.endDate)
-	if err != nil {
-		validDates = false
-		responseMessage.AddMessageByIssue(faults.InvalidDateTimeValue, responses.Body, "end_date", inputPeriodDto.endDate)
-	}
-
-	if validDates && (startDate.Equal(endDate) || startDate.After(endDate)) {
-		responseMessage.AddMessageByIssue(faults.ConditionalLowerThan, responses.Body, "start_date", inputPeriodDto.startDate, "start_date", "end_date")
+	if inputPeriodDto.startDate.Equal(inputPeriodDto.endDate) || inputPeriodDto.startDate.After(inputPeriodDto.endDate) {
+		responseMessage.AddMessageByIssue(faults.ConditionalLowerThan, responses.Body, "start_date", inputPeriodDto.startDate.String(), "start_date", "end_date")
 	}
 
 	return responseMessage
