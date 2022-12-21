@@ -4,11 +4,13 @@ import (
 	"log"
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
+	"marcelofelixsalgado/financial-web/api/utils"
 	"marcelofelixsalgado/financial-web/pkg/usecase/user/create"
 	"net/http"
 )
 
 type IUserHandler interface {
+	LoadUserRegisterPage(w http.ResponseWriter, r *http.Request)
 	CreateUser(w http.ResponseWriter, r *http.Request)
 }
 
@@ -20,6 +22,10 @@ func NewUserHandler(createUseCase create.ICreateUseCase) IUserHandler {
 	return &UserHandler{
 		createUseCase: createUseCase,
 	}
+}
+
+func (userHandler *UserHandler) LoadUserRegisterPage(w http.ResponseWriter, r *http.Request) {
+	utils.ExecuteTemplate(w, "register.html", nil)
 }
 
 func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {

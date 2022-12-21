@@ -12,21 +12,8 @@ function userRegister(event) {
             email: $('#email').val(),
         }
     }).done(function(data) {
-        
-        // $.ajax({
-        //     url: "/register/credentials",
-        //     method: "GET",
-        //     data: {
-        //         user_id: data.id,
-        //     }            
-        // }).done(function(error) {
-        //     alert("OK!")
-        // }).fail(function(error) {
-        //     alert("erro!")
-        // })
-
-        window.location = `/register/credentials?user_id=`+data.id;
+        window.location = `/register/credentials?user_id=`+data.id+`&email=`+data.email;
     }).fail(function(error) {
-        alert("erro!")
+        Swal.fire("Ops...", "Erro ao cadastrar o usuário!", "error");
     });    
 }

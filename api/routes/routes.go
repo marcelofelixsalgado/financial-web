@@ -5,6 +5,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
+	"marcelofelixsalgado/financial-web/api/controllers/logout"
 	"marcelofelixsalgado/financial-web/api/controllers/period"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/middlewares"
@@ -42,15 +43,18 @@ type Routes struct {
 	userRoutes           user.UserRoutes
 	homeRoutes           home.HomeRoutes
 	periodRoutes         period.PeriodRoutes
+	logoutRoutes         logout.LogoutRoutes
 	healthRoutes         health.HealthRoutes
 }
 
-func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes, periodRoutes period.PeriodRoutes, healthRoutes health.HealthRoutes) *Routes {
+func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes,
+	periodRoutes period.PeriodRoutes, logoutRoutes logout.LogoutRoutes, healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
 		userCredentialRoutes: userCredentialRoutes,
 		userRoutes:           userRoutes,
 		homeRoutes:           homeRoutes,
 		periodRoutes:         periodRoutes,
+		logoutRoutes:         logoutRoutes,
 		healthRoutes:         healthRoutes,
 	}
 }
@@ -70,6 +74,9 @@ func (routes *Routes) SetupRoutes() *mux.Router {
 
 	// period routes
 	setupRoute(router, routes.periodRoutes.PeriodRouteMapping())
+
+	// logout routes
+	setupRoute(router, routes.logoutRoutes.LogoutRouteMapping())
 
 	// health routes
 	setupRoute(router, routes.healthRoutes.HealthRouteMapping())

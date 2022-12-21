@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-var healthBasepath = "/v1/health"
+var healthBasepath = "/health"
 
 type HealthRoutes struct {
 	healthHandler IHealthHandler

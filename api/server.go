@@ -10,6 +10,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
+	"marcelofelixsalgado/financial-web/api/controllers/logout"
 	"marcelofelixsalgado/financial-web/api/controllers/period"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/cookies"
@@ -42,10 +43,11 @@ func NewServer() *mux.Router {
 	userRoutes := setupUserRoutes()
 	homeRoutes := setupHomeRoutes()
 	periodRoutes := setupPeriodRoutes()
+	logoutRoutes := setupLogoutRoutes()
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, healthRoutes)
+	routes := routes.NewRoutes(userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, logoutRoutes, healthRoutes)
 
 	router := routes.SetupRoutes()
 	return router
@@ -114,6 +116,16 @@ func setupHomeRoutes() home.HomeRoutes {
 	homeRoutes := home.NewHomeRoutes(homeHandler)
 
 	return homeRoutes
+}
+
+func setupLogoutRoutes() logout.LogoutRoutes {
+	// setup router handlers
+	logoutHandler := logout.NewLogoutHandler()
+
+	// setup routes
+	logoutRoutes := logout.NewLogoutRoutes(logoutHandler)
+
+	return logoutRoutes
 }
 
 func setupHealthRoutes() health.HealthRoutes {

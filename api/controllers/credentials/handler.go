@@ -14,6 +14,7 @@ import (
 type IUserCredentialsHandler interface {
 	LoadUserRegisterCredentialsPage(w http.ResponseWriter, r *http.Request)
 	CreateUserCredentials(w http.ResponseWriter, r *http.Request)
+	LoadLoginPage(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 }
 
@@ -33,8 +34,10 @@ func (userCredentialsHandler *UserCredentialsHandler) LoadUserRegisterCredential
 	r.ParseForm()
 	utils.ExecuteTemplate(w, "registercredentials.html", struct {
 		User_id string
+		Email   string
 	}{
 		User_id: r.FormValue("user_id"),
+		Email:   r.FormValue("email"),
 	})
 }
 
@@ -70,6 +73,18 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 
 	// Response ok
 	responses.JSON(w, httpStatusCode, output)
+}
+
+func (userCredentialsHandler *UserCredentialsHandler) LoadLoginPage(w http.ResponseWriter, r *http.Request) {
+
+	// If the user is already logged, doesn't make sense load the login page again
+	cookie, _ := cookies.Read(r)
+	if cookie["token"] != "" {
+		http.Redirect(w, r, "/home", 302)
+		return
+	}
+
+	utils.ExecuteTemplate(w, "login.html", nil)
 }
 
 func (userCredentialsHandler *UserCredentialsHandler) Login(w http.ResponseWriter, r *http.Request) {

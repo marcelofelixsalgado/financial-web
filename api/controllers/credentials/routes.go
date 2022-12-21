@@ -21,13 +21,13 @@ func (userCredentialsRoutes *UserCredentialsRoutes) UserCredentialsRouteMapping(
 		{
 			URI:                    "/",
 			Method:                 http.MethodGet,
-			Function:               controllers.LoadLoginPage,
+			Function:               userCredentialsRoutes.userCredentialsHandler.LoadLoginPage,
 			RequiresAuthentication: false,
 		},
 		{
 			URI:                    "/login",
 			Method:                 http.MethodGet,
-			Function:               controllers.LoadLoginPage,
+			Function:               userCredentialsRoutes.userCredentialsHandler.LoadLoginPage,
 			RequiresAuthentication: false,
 		},
 		{

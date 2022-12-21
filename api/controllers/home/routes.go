@@ -21,7 +21,7 @@ func (homeRoutes *HomeRoutes) HomeRouteMapping() []controllers.Route {
 		{
 			URI:                    "/home",
 			Method:                 http.MethodGet,
-			Function:               controllers.LoadUserHomePage,
+			Function:               homeRoutes.homeHandler.Home,
 			RequiresAuthentication: true,
 		},
 	}

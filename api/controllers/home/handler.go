@@ -1,6 +1,9 @@
 package home
 
-import "net/http"
+import (
+	"marcelofelixsalgado/financial-web/api/utils"
+	"net/http"
+)
 
 type IHomeHandler interface {
 	Home(w http.ResponseWriter, r *http.Request)
@@ -14,5 +17,5 @@ func NewHomeHandler() IHomeHandler {
 }
 
 func (homeHandler *HomeHandler) Home(w http.ResponseWriter, r *http.Request) {
-
+	utils.ExecuteTemplate(w, "home.html", nil)
 }

@@ -20,7 +20,7 @@ func (userRoutes *UserRoutes) UserRouteMapping() []controllers.Route {
 		{
 			URI:                    "/register",
 			Method:                 http.MethodGet,
-			Function:               controllers.LoadUserRegisterPage,
+			Function:               userRoutes.userHandler.LoadUserRegisterPage,
 			RequiresAuthentication: false,
 		},
 		{

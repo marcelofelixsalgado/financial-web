@@ -3,6 +3,7 @@ package cookies
 import (
 	"marcelofelixsalgado/financial-web/configs"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/securecookie"
 )
@@ -50,4 +51,15 @@ func Read(r *http.Request) (map[string]string, error) {
 		return nil, err
 	}
 	return values, nil
+}
+
+// Remove cookie stored values
+func Delete(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "data",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Expires:  time.Unix(0, 0),
+	})
 }

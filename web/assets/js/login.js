@@ -13,6 +13,6 @@ function userLogin(event) {
     }).done(function() {
         window.location = "/home";
     }).fail(function(error) {
-        alert("erro!")
+        Swal.fire("Ops...", "Usuário ou senha incorretos!", "error");
     });    
 }
