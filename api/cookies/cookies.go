@@ -17,6 +17,7 @@ func Configure() {
 
 // Register authentication information
 func Save(w http.ResponseWriter, userID, accessToken string) error {
+
 	data := map[string]string{
 		"id":    userID,
 		"token": accessToken,

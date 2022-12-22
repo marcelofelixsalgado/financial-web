@@ -30,7 +30,6 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto,
 	}
 
 	url := fmt.Sprintf("%s/v1/users/%s/credentials", configs.UserApiURL, input.UserId)
-	// response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, user, false)
 	if err != nil {
 		return OutputCreateUserCredentialsDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err

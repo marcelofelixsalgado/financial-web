@@ -11,7 +11,6 @@ import (
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/find"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/update"
-	"time"
 
 	"net/http"
 	"strconv"
@@ -58,7 +57,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 	}
 
 	startDateStr := fmt.Sprintf("%s%s", r.FormValue("start_date"), "T00:00:00Z")
-	startDate, err := convertStringToDateTime(startDateStr)
+	startDate, err := utils.ConvertStringToDateTime(startDateStr)
 	if err != nil {
 		log.Printf("Error trying to convert the StartDate at field: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -66,7 +65,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 	}
 
 	endDateStr := fmt.Sprintf("%s%s", r.FormValue("end_date"), "T23:59:59Z")
-	endDate, err := convertStringToDateTime(endDateStr)
+	endDate, err := utils.ConvertStringToDateTime(endDateStr)
 	if err != nil {
 		log.Printf("Error trying to convert the EndDate at field: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -156,20 +155,6 @@ func (periodHandler *PeriodHandler) FindPeriod(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	// output.StartDate, err = convertDateTimeToDate(output.StartDate)
-	// if err != nil {
-	// 	log.Printf("Error trying to convert the StartDate at field: %v", err)
-	// 	responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-	// 	return
-	// }
-
-	// output.EndDate, err = convertDateTimeToDate(output.EndDate)
-	// if err != nil {
-	// 	log.Printf("Error trying to convert the EndDate at field: %v", err)
-	// 	responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-	// 	return
-	// }
-
 	// Response ok
 	utils.ExecuteTemplate(w, "period-edit.html", output)
 }
@@ -186,7 +171,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 	}
 
 	startDateStr := fmt.Sprintf("%s%s", r.FormValue("start_date"), "T00:00:00Z")
-	startDate, err := convertStringToDateTime(startDateStr)
+	startDate, err := utils.ConvertStringToDateTime(startDateStr)
 	if err != nil {
 		log.Printf("Error trying to convert the StartDate at field: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -194,7 +179,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 	}
 
 	endDateStr := fmt.Sprintf("%s%s", r.FormValue("end_date"), "T23:59:59Z")
-	endDate, err := convertStringToDateTime(endDateStr)
+	endDate, err := utils.ConvertStringToDateTime(endDateStr)
 	if err != nil {
 		log.Printf("Error trying to convert the EndDate at field: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -254,24 +239,4 @@ func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.
 
 	// Response ok
 	responses.JSON(w, httpStatusCode, output)
-}
-
-func convertStringToDateTime(source string) (time.Time, error) {
-	layout := "02/01/2006T15:04:05Z"
-	parsedDate, err := time.Parse(layout, source)
-	if err != nil {
-		return time.Time{}, err
-	}
-	// return time.Parse("2006-01-02T15:04:05Z"), nil
-	return parsedDate, nil
-}
-
-func convertDateTimeToString(source string) (time.Time, error) {
-	layout := "2006-01-02T15:04:05Z"
-	parsedDate, err := time.Parse(layout, source)
-	if err != nil {
-		return time.Time{}, err
-	}
-	// return parsedDate.Format("02/01/2006"), nil
-	return parsedDate, nil
 }

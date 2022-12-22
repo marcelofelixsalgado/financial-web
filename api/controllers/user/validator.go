@@ -4,6 +4,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
 	"marcelofelixsalgado/financial-web/pkg/usecase/user/create"
+	"marcelofelixsalgado/financial-web/pkg/usecase/user/update"
 )
 
 type InputUserDto struct {
@@ -17,6 +18,18 @@ func ValidateCreateRequestBody(inputCreateUserDto create.InputCreateUserDto) *re
 		name:  inputCreateUserDto.Name,
 		phone: inputCreateUserDto.Phone,
 		email: inputCreateUserDto.Email,
+	}
+	return validateRequestBody(inputUserDto)
+}
+
+func ValidateUpdateRequestBody(inputUpdateUserDto update.InputUpdateUserDto) *responses.ResponseMessage {
+	if inputUpdateUserDto.Id == "" {
+		return responses.NewResponseMessage().AddMessageByIssue(faults.MissingRequiredField, responses.PathParameter, "id", "")
+	}
+	inputUserDto := InputUserDto{
+		name:  inputUpdateUserDto.Name,
+		phone: inputUpdateUserDto.Phone,
+		email: inputUpdateUserDto.Email,
 	}
 	return validateRequestBody(inputUserDto)
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Financial App - Profile</title>
+        <link href="/web/assets/css/bootstrap.css" rel="stylesheet" />
+    </head>
+    <body>
+        {{ template "header" }}
+
+        <div class="container-fluid">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Meu Perfil
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Nome: {{ .Name }}<br>
+                                Telefone: {{ .Phone }}<br>
+                                Email: {{ .Email }}<br>
+                                Membro desde: {{ .CreatedAt.Format "02/01/2006" }}
+                            </h6>
+    
+                            <div class="row">
+                                <div class="col-12">
+                                    <a id="edit-user" href="/user-edit" class="card-link">
+                                        <button class="btn btn-info">
+                                            Editar dados
+                                        </button>
+                                    </a>
+                                    <a id="edit-user-credentials" href="/credentials-edit" class="card-link">
+                                        <button class="btn btn-info">
+                                            Atualizar senha
+                                        </button>
+                                    </a>
+                                    <a id="delete-user" class="card-link">
+                                        <button class="btn btn-info">
+                                            Excluir conta permanentemente
+                                        </button>
+                                    </a>                        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ template "footer" }}
+        {{ template "scripts" }}
+        <script src="/web/assets/js/user.js"></script>
+    </body>
+</html>        

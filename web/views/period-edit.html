@@ -38,9 +38,16 @@
                         <input type="text" class="form-control" id="end_date" name="end_date" required="required"
                             placeholder="Insira a data de término do período (DD/MM/YYYY)" value='{{ .EndDate.Format "02/01/2006" }}'>
                     </div>     
-                    <button id="update-period" class="btn btn-info" data-period-id="{{ .Id }}">
-                        Salvar Alterações
-                    </button>
+                    <a id="update-period" data-period-id="{{ .Id }}">
+                        <button class="btn btn-info">
+                            Salvar Alterações
+                        </button>
+                    </a>
+                    <a id="cancel" href="/periods" class="card-link">
+                        <button class="btn btn-dark">
+                            Cancelar
+                        </button>
+                    </a>                    
                 </div>
             </div>
         </div>

@@ -29,7 +29,6 @@ func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto, request *http
 	}
 
 	url := fmt.Sprintf("%s/v1/login", configs.UserApiURL)
-	// response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, user, false)
 	if err != nil {
 		return OutputUserLoginDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err

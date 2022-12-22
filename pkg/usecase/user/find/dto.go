@@ -1,17 +1,16 @@
-package create
+package find
 
 import "time"
 
-type InputCreateUserDto struct {
-	Name  string `json:"name"`
-	Phone string `json:"phone"`
-	Email string `json:"email"`
+type InputFindUserDto struct {
+	Id string
 }
 
-type OutputCreateUserDto struct {
+type OutputFindUserDto struct {
 	Id        string    `json:"id"`
 	Name      string    `json:"name"`
 	Phone     string    `json:"phone"`
 	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }

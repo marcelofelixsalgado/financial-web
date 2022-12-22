@@ -30,7 +30,6 @@ func (createPeriodUseCase *CreatePeriodUseCase) Execute(input InputCreatePeriodD
 	}
 
 	url := fmt.Sprintf("%s/v1/periods", configs.PeriodApiURL)
-	// response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, period, true)
 	if err != nil {
 		return OutputCreatePeriodDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err

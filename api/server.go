@@ -17,10 +17,15 @@ import (
 	"marcelofelixsalgado/financial-web/api/routes"
 	"marcelofelixsalgado/financial-web/api/utils"
 	"marcelofelixsalgado/financial-web/configs"
+
 	userCreate "marcelofelixsalgado/financial-web/pkg/usecase/user/create"
+	userDelete "marcelofelixsalgado/financial-web/pkg/usecase/user/delete"
+	userFind "marcelofelixsalgado/financial-web/pkg/usecase/user/find"
+	userUpdate "marcelofelixsalgado/financial-web/pkg/usecase/user/update"
 
 	userCredentialsCreate "marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
 	userCredentialsLogin "marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
+	userCredentialsUpdate "marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
 
 	periodCreate "marcelofelixsalgado/financial-web/pkg/usecase/periods/create"
 	periodDelete "marcelofelixsalgado/financial-web/pkg/usecase/periods/delete"
@@ -64,9 +69,12 @@ func setupUserRoutes() user.UserRoutes {
 
 	// setup Use Cases (services)
 	createUseCase := userCreate.NewCreateUseCase()
+	updateUseCase := userUpdate.NewUpdateUseCase()
+	findUseCase := userFind.NewFindUseCase()
+	deleteUseCase := userDelete.NewDeleteUseCase()
 
 	// setup router handlers
-	userHandler := user.NewUserHandler(createUseCase)
+	userHandler := user.NewUserHandler(createUseCase, updateUseCase, findUseCase, deleteUseCase)
 
 	// setup routes
 	userRoutes := user.NewUserRoutes(userHandler)
@@ -78,10 +86,11 @@ func setupUserCredentialsRoutes() credentials.UserCredentialsRoutes {
 
 	// setup Use Cases (services)
 	createUseCase := userCredentialsCreate.NewCreateUseCase()
+	updateUseCase := userCredentialsUpdate.NewUpdateUseCase()
 	loginUseCase := userCredentialsLogin.NewLoginUseCase()
 
 	// setup router handlers
-	userCredentialsHandler := credentials.NewUserCredentialsHandler(createUseCase, loginUseCase)
+	userCredentialsHandler := credentials.NewUserCredentialsHandler(createUseCase, updateUseCase, loginUseCase)
 
 	// setup routes
 	userCredentialsRoutes := credentials.NewUserCredentialsRoutes(userCredentialsHandler)

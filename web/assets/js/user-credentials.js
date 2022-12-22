@@ -1,9 +1,10 @@
 $('#register-credentials-form').on('submit', userRegisterCredentials);
+$('#update-credentials').on('submit', updatePassword);
 
 function userRegisterCredentials(event) {
     event.preventDefault();
     
-    if ($('#password').val() != $('#password-confirm').val()) {
+    if ($('#password').val() != $('#passwordConfirm').val()) {
         Swal.fire("Ops...", "As senhas não coincidem!", "error");
         return
     }
@@ -34,4 +35,29 @@ function userRegisterCredentials(event) {
     }).fail(function(error) {
         Swal.fire("Ops...", "Erro ao cadastrar as credenciais do usuário!", "error");
     })    
+}
+
+function updatePassword(event) {
+    event.preventDefault();
+
+    if ($('#newPassword').val() != $('#newPasswordConfirm').val()) {
+        Swal.fire("Ops...", "As senhas não coincidem!", "warning");
+        return;
+    }
+
+    $.ajax({
+        url: "/register/credentials",
+        method: "PUT",
+        data: {
+            current_password: $('#current_password').val(),
+            new_password: $('#new_password').val()
+        }
+    }).done(function() {
+        Swal.fire("Sucesso!", "A senha foi atualizada com sucesso!", "success")
+            .then(function() {
+                window.location = "/profile";
+            })
+    }).fail(function() {
+        Swal.fire("Ops...", "Erro ao atualizar a senha!", "error");
+    });    
 }

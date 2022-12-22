@@ -3,7 +3,7 @@ package update
 import "time"
 
 type InputUpdatePeriodDto struct {
-	Id        string    `json:"_"`
+	Id        string    `json:"-"`
 	Code      string    `json:"code"`
 	Name      string    `json:"name"`
 	Year      int       `json:"year"`
