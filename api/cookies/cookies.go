@@ -8,11 +8,11 @@ import (
 	"github.com/gorilla/securecookie"
 )
 
-var s *securecookie.SecureCookie
+var secureCookie *securecookie.SecureCookie
 
 // Uses the environment variables to create a SecureCookie
 func Configure() {
-	s = securecookie.New(configs.HashKey, configs.BlockKey)
+	secureCookie = securecookie.New(configs.HashKey, configs.BlockKey)
 }
 
 // Register authentication information
@@ -23,7 +23,7 @@ func Save(w http.ResponseWriter, userID, accessToken string) error {
 		"token": accessToken,
 	}
 
-	encodedData, err := s.Encode("data", data)
+	encodedData, err := secureCookie.Encode("data", data)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func Read(r *http.Request) (map[string]string, error) {
 
 	// decode the data from the cookie
 	values := make(map[string]string)
-	if err = s.Decode("data", cookie.Value, &values); err != nil {
+	if err = secureCookie.Decode("data", cookie.Value, &values); err != nil {
 		return nil, err
 	}
 	return values, nil
