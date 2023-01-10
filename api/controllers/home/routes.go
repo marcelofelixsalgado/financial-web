@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+var homeBasepath = "/home"
+
 type HomeRoutes struct {
 	homeHandler IHomeHandler
 }
@@ -15,11 +17,11 @@ func NewHomeRoutes(homeHandler IHomeHandler) HomeRoutes {
 	}
 }
 
-func (homeRoutes *HomeRoutes) HomeRouteMapping() []controllers.Route {
+func (homeRoutes *HomeRoutes) HomeRouteMapping() (string, []controllers.Route) {
 
-	return []controllers.Route{
+	return homeBasepath, []controllers.Route{
 		{
-			URI:                    "/home",
+			URI:                    "",
 			Method:                 http.MethodGet,
 			Function:               homeRoutes.homeHandler.Home,
 			RequiresAuthentication: true,

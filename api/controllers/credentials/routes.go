@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+var credentialsBasePath = "/register"
+
 type UserCredentialsRoutes struct {
 	userCredentialsHandler IUserCredentialsHandler
 }
@@ -15,47 +17,35 @@ func NewUserCredentialsRoutes(userCredentialsHandler IUserCredentialsHandler) Us
 	}
 }
 
-func (userCredentialsRoutes *UserCredentialsRoutes) UserCredentialsRouteMapping() []controllers.Route {
+func (userCredentialsRoutes *UserCredentialsRoutes) UserCredentialsRouteMapping() (string, []controllers.Route) {
 
-	return []controllers.Route{
+	return credentialsBasePath, []controllers.Route{
 		{
-			URI:                    "/",
+			URI:                    "",
 			Method:                 http.MethodGet,
-			Function:               userCredentialsRoutes.userCredentialsHandler.LoadLoginPage,
+			Function:               userCredentialsRoutes.userCredentialsHandler.LoadUserRegisterPage,
 			RequiresAuthentication: false,
 		},
 		{
-			URI:                    "/login",
-			Method:                 http.MethodGet,
-			Function:               userCredentialsRoutes.userCredentialsHandler.LoadLoginPage,
-			RequiresAuthentication: false,
-		},
-		{
-			URI:                    "/login",
-			Method:                 http.MethodPost,
-			Function:               userCredentialsRoutes.userCredentialsHandler.Login,
-			RequiresAuthentication: false,
-		},
-		{
-			URI:                    "/register/credentials",
+			URI:                    "/credentials",
 			Method:                 http.MethodGet,
 			Function:               userCredentialsRoutes.userCredentialsHandler.LoadUserRegisterCredentialsPage,
 			RequiresAuthentication: false,
 		},
 		{
-			URI:                    "/register/credentials",
+			URI:                    "/credentials",
 			Method:                 http.MethodPost,
 			Function:               userCredentialsRoutes.userCredentialsHandler.CreateUserCredentials,
 			RequiresAuthentication: false,
 		},
 		{
-			URI:                    "/register/credentials",
+			URI:                    "/credentials",
 			Method:                 http.MethodPut,
 			Function:               userCredentialsRoutes.userCredentialsHandler.UpdateUserCredentials,
 			RequiresAuthentication: false,
 		},
 		{
-			URI:                    "/credentials-edit",
+			URI:                    "/credentials/credentials-edit",
 			Method:                 http.MethodGet,
 			Function:               userCredentialsRoutes.userCredentialsHandler.LoadUserCredentialsEditPage,
 			RequiresAuthentication: false,

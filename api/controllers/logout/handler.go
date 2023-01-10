@@ -3,10 +3,12 @@ package logout
 import (
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ILogoutHandler interface {
-	Logout(w http.ResponseWriter, r *http.Request)
+	Logout(ctx echo.Context) error
 }
 
 type LogoutHandler struct {
@@ -16,10 +18,12 @@ func NewLogoutHandler() ILogoutHandler {
 	return &LogoutHandler{}
 }
 
-func (h *LogoutHandler) Logout(w http.ResponseWriter, r *http.Request) {
+func (h *LogoutHandler) Logout(ctx echo.Context) error {
 
 	// Removing the cookie
-	cookies.Delete(w)
+	cookies.Delete(ctx.Response().Writer)
 
-	http.Redirect(w, r, "/login", 302)
+	http.Redirect(ctx.Response().Writer, ctx.Request(), "/login", 302)
+
+	return nil
 }

@@ -5,40 +5,17 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
+	"marcelofelixsalgado/financial-web/api/controllers/login"
 	"marcelofelixsalgado/financial-web/api/controllers/logout"
 	"marcelofelixsalgado/financial-web/api/controllers/period"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/middlewares"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
 )
 
-// func SetupRoutes() *mux.Router {
-// 	router := mux.NewRouter()
-
-// 	// user routes
-// 	for _, route := range register.UserRoutes {
-// 		router.HandleFunc(route.URI,
-// 			middlewares.Logger(
-// 				route.Function)).Methods(route.Method)
-// 	}
-
-// 	// login routes
-// 	for _, route := range login.LoginRoutes {
-// 		router.HandleFunc(route.URI,
-// 			middlewares.Logger(
-// 				route.Function)).Methods(route.Method)
-// 	}
-
-// 	// Setting the path for static files in assets folder
-// 	fileServer := http.FileServer(http.Dir("./assets/"))
-// 	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fileServer))
-
-// 	return router
-// }
-
 type Routes struct {
+	loginRoutes          login.LoginRoutes
 	userCredentialRoutes credentials.UserCredentialsRoutes
 	userRoutes           user.UserRoutes
 	homeRoutes           home.HomeRoutes
@@ -47,9 +24,10 @@ type Routes struct {
 	healthRoutes         health.HealthRoutes
 }
 
-func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes,
+func NewRoutes(loginRoutes login.LoginRoutes, userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes,
 	periodRoutes period.PeriodRoutes, logoutRoutes logout.LogoutRoutes, healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
+		loginRoutes:          loginRoutes,
 		userCredentialRoutes: userCredentialRoutes,
 		userRoutes:           userRoutes,
 		homeRoutes:           homeRoutes,
@@ -59,45 +37,51 @@ func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoute
 	}
 }
 
-func (routes *Routes) SetupRoutes() *mux.Router {
-	router := mux.NewRouter()
-	// router.Use(middlewares.ResponseFormatMiddleware)
+func (routes *Routes) RouteMapping(http *echo.Echo) {
+
+	// login routes
+	basePath, loginRoutes := routes.loginRoutes.LoginRouteMapping()
+	setupRoute(http, basePath, loginRoutes)
 
 	// user credentials routes
-	setupRoute(router, routes.userCredentialRoutes.UserCredentialsRouteMapping())
+	basePath, userCredentialsRoutes := routes.userCredentialRoutes.UserCredentialsRouteMapping()
+	setupRoute(http, basePath, userCredentialsRoutes)
 
 	// user routes
-	setupRoute(router, routes.userRoutes.UserRouteMapping())
+	basePath, userRoutes := routes.userRoutes.UserRouteMapping()
+	setupRoute(http, basePath, userRoutes)
 
 	// home routes
-	setupRoute(router, routes.homeRoutes.HomeRouteMapping())
+	basePath, homeRoutes := routes.homeRoutes.HomeRouteMapping()
+	setupRoute(http, basePath, homeRoutes)
 
 	// period routes
-	setupRoute(router, routes.periodRoutes.PeriodRouteMapping())
+	basePath, periodRoutes := routes.periodRoutes.PeriodRouteMapping()
+	setupRoute(http, basePath, periodRoutes)
 
 	// logout routes
-	setupRoute(router, routes.logoutRoutes.LogoutRouteMapping())
+	basePath, logoutRoutes := routes.logoutRoutes.LogoutRouteMapping()
+	setupRoute(http, basePath, logoutRoutes)
 
 	// health routes
-	setupRoute(router, routes.healthRoutes.HealthRouteMapping())
+	basePath, healthRoutes := routes.healthRoutes.HealthRouteMapping()
+	setupRoute(http, basePath, healthRoutes)
 
 	// Setting the path for static files in assets folder
-	fileServer := http.FileServer(http.Dir("./web/assets/"))
-	router.PathPrefix("/web/assets/").Handler(http.StripPrefix("/web/assets/", fileServer))
+	// fileServer := http.FileServer(http.Dir("./web/assets/"))
+	// router.PathPrefix("/web/assets/").Handler(http.StripPrefix("/web/assets/", fileServer))
 
-	return router
+	// return router
 }
 
-func setupRoute(router *mux.Router, routes []controllers.Route) {
+func setupRoute(http *echo.Echo, basePath string, routes []controllers.Route) {
+	group := http.Group(basePath)
+
 	for _, route := range routes {
 		if route.RequiresAuthentication {
-			router.HandleFunc(route.URI,
-				middlewares.Logger(
-					middlewares.Authenticate(route.Function))).Methods(route.Method)
+			group.Add(route.Method, route.URI, route.Function, middlewares.Authenticate)
 		} else {
-			router.HandleFunc(route.URI,
-				middlewares.Logger(route.Function)).Methods(route.Method)
-
+			group.Add(route.Method, route.URI, route.Function)
 		}
 	}
 }

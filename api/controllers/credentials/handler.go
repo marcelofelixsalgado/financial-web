@@ -5,20 +5,20 @@ import (
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/api/utils"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IUserCredentialsHandler interface {
-	LoadUserRegisterCredentialsPage(w http.ResponseWriter, r *http.Request)
-	CreateUserCredentials(w http.ResponseWriter, r *http.Request)
-	UpdateUserCredentials(w http.ResponseWriter, r *http.Request)
-	LoadLoginPage(w http.ResponseWriter, r *http.Request)
-	Login(w http.ResponseWriter, r *http.Request)
-	LoadUserCredentialsEditPage(w http.ResponseWriter, r *http.Request)
+	LoadUserRegisterPage(ctx echo.Context) error
+	LoadUserRegisterCredentialsPage(ctx echo.Context) error
+	CreateUserCredentials(ctx echo.Context) error
+	UpdateUserCredentials(ctx echo.Context) error
+	LoadUserCredentialsEditPage(ctx echo.Context) error
 }
 
 type UserCredentialsHandler struct {
@@ -35,143 +35,86 @@ func NewUserCredentialsHandler(createUseCase create.ICreateUseCase, updateUseCas
 	}
 }
 
-func (userCredentialsHandler *UserCredentialsHandler) LoadUserRegisterCredentialsPage(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	utils.ExecuteTemplate(w, "user-credentials.html", struct {
+func (userCredentialsHandler *UserCredentialsHandler) LoadUserRegisterPage(ctx echo.Context) error {
+	return ctx.Render(http.StatusOK, "register.html", nil)
+}
+
+func (userCredentialsHandler *UserCredentialsHandler) LoadUserRegisterCredentialsPage(ctx echo.Context) error {
+
+	return ctx.Render(http.StatusOK, "user-credentials.html", struct {
 		User_id string
 		Email   string
 	}{
-		User_id: r.FormValue("user_id"),
-		Email:   r.FormValue("email"),
+		User_id: ctx.FormValue("user_id"),
+		Email:   ctx.FormValue("email"),
 	})
 }
 
-func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(ctx echo.Context) error {
 
 	input := create.InputCreateUserCredentialsDto{
-		UserId:   r.FormValue("user_id"),
-		Password: r.FormValue("password"),
+		UserId:   ctx.FormValue("user_id"),
+		Password: ctx.FormValue("password"),
 	}
 
 	// Validating input parameters
 	if responseMessage := ValidateCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
 		log.Printf("Error validating the request body: %v", responseMessage.GetMessage())
-		responseMessage.Write(w)
-		return
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Calling use case
-	output, faultMessage, httpStatusCode, err := userCredentialsHandler.createUseCase.Execute(input, r)
+	output, faultMessage, httpStatusCode, err := userCredentialsHandler.createUseCase.Execute(input, ctx)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusCreated {
-		responses.JSON(w, httpStatusCode, faultMessage)
 		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
-		return
+		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 
 	// Response ok
-	responses.JSON(w, httpStatusCode, output)
+	return ctx.JSON(httpStatusCode, output)
 }
 
-func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-
-	cookie, _ := cookies.Read(r)
-	loggedUserID, _ := cookie["id"]
+func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(ctx echo.Context) error {
+	cookie, _ := cookies.Read(ctx)
+	loggedUserID := cookie.UserID
 
 	input := update.InputUpdateUserCredentialsDto{
 		UserId:          loggedUserID,
-		CurrentPassword: r.FormValue("current_password"),
-		NewPassword:     r.FormValue("new_password"),
+		CurrentPassword: ctx.FormValue("current_password"),
+		NewPassword:     ctx.FormValue("new_password"),
 	}
 
 	// Validating input parameters
 	if responseMessage := ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
 		log.Printf("Error validating the request body: %v", responseMessage.GetMessage())
-		responseMessage.Write(w)
-		return
+		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Calling use case
-	output, faultMessage, httpStatusCode, err := userCredentialsHandler.updateUseCase.Execute(input, r)
+	output, faultMessage, httpStatusCode, err := userCredentialsHandler.updateUseCase.Execute(input, ctx)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusOK {
-		responses.JSON(w, httpStatusCode, faultMessage)
 		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
-		return
+		ctx.JSON(httpStatusCode, faultMessage)
 	}
 
 	// Response ok
-	responses.JSON(w, httpStatusCode, output)
+	return ctx.JSON(httpStatusCode, output)
 }
 
-func (userCredentialsHandler *UserCredentialsHandler) LoadLoginPage(w http.ResponseWriter, r *http.Request) {
-
-	// If the user is already logged, doesn't make sense load the login page again
-	cookie, _ := cookies.Read(r)
-	if cookie["token"] != "" {
-		http.Redirect(w, r, "/home", 302)
-		return
-	}
-
-	utils.ExecuteTemplate(w, "login.html", nil)
-}
-
-func (userCredentialsHandler *UserCredentialsHandler) Login(w http.ResponseWriter, r *http.Request) {
-
-	r.ParseForm()
-
-	input := login.InputUserLoginDto{
-		Email:    r.FormValue("email"),
-		Password: r.FormValue("password"),
-	}
-
-	// Validating input parameters
-	if responseMessage := ValidateLoginRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		log.Printf("Error validating the request body: %v", responseMessage.GetMessage())
-		responseMessage.Write(w)
-		return
-	}
-
-	// Calling use case
-	output, faultMessage, httpStatusCode, err := userCredentialsHandler.loginUseCase.Execute(input, r)
-	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
-	}
-
-	// Returning backend error response
-	if httpStatusCode != http.StatusOK {
-		responses.JSON(w, httpStatusCode, faultMessage)
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
-		return
-	}
-
-	// Saving the cookie
-	if err = cookies.Save(w, output.User.Id, output.AccessToken); err != nil {
-		log.Printf("Error saving the cookie: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
-	}
-
-	// Response ok
-	responses.JSON(w, httpStatusCode, output)
-}
-
-func (userCredentialsHandler *UserCredentialsHandler) LoadUserCredentialsEditPage(w http.ResponseWriter, r *http.Request) {
-	utils.ExecuteTemplate(w, "user-credentials-edit.html", nil)
+func (userCredentialsHandler *UserCredentialsHandler) LoadUserCredentialsEditPage(ctx echo.Context) error {
+	return ctx.Render(http.StatusOK, "user-credentials-edit.html", nil)
 }

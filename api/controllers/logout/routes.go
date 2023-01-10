@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+var logoutBasepath = "/logout"
+
 type LogoutRoutes struct {
 	LogoutHandler ILogoutHandler
 }
@@ -15,10 +17,10 @@ func NewLogoutRoutes(LogoutHandler ILogoutHandler) LogoutRoutes {
 	}
 }
 
-func (LogoutRoutes *LogoutRoutes) LogoutRouteMapping() []controllers.Route {
-	return []controllers.Route{
+func (LogoutRoutes *LogoutRoutes) LogoutRouteMapping() (string, []controllers.Route) {
+	return logoutBasepath, []controllers.Route{
 		{
-			URI:                    "/logout",
+			URI:                    "",
 			Method:                 http.MethodGet,
 			Function:               LogoutRoutes.LogoutHandler.Logout,
 			RequiresAuthentication: true,

@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ILoginUseCase interface {
-	Execute(InputUserLoginDto, *http.Request) (OutputUserLoginDto, faults.IFaultMessage, int, error)
+	Execute(InputUserLoginDto, echo.Context) (OutputUserLoginDto, faults.IFaultMessage, int, error)
 }
 
 type LoginUseCase struct {
@@ -21,15 +23,15 @@ func NewLoginUseCase() ILoginUseCase {
 	return &LoginUseCase{}
 }
 
-func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto, request *http.Request) (OutputUserLoginDto, faults.IFaultMessage, int, error) {
+func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto, ctx echo.Context) (OutputUserLoginDto, faults.IFaultMessage, int, error) {
 	var outputUserLoginDto OutputUserLoginDto
 	user, err := json.Marshal(input)
 	if err != nil {
 		return OutputUserLoginDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/login", configs.UserApiURL)
-	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, user, false)
+	url := fmt.Sprintf("%s/v1/login", settings.Config.UserApiURL)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodPost, url, user, false)
 	if err != nil {
 		return OutputUserLoginDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}

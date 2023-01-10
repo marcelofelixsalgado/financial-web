@@ -1,12 +1,13 @@
 package home
 
 import (
-	"marcelofelixsalgado/financial-web/api/utils"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IHomeHandler interface {
-	Home(w http.ResponseWriter, r *http.Request)
+	Home(ctx echo.Context) error
 }
 
 type HomeHandler struct {
@@ -16,6 +17,6 @@ func NewHomeHandler() IHomeHandler {
 	return &HomeHandler{}
 }
 
-func (homeHandler *HomeHandler) Home(w http.ResponseWriter, r *http.Request) {
-	utils.ExecuteTemplate(w, "home.html", nil)
+func (homeHandler *HomeHandler) Home(ctx echo.Context) error {
+	return ctx.Render(http.StatusOK, "home.html", nil)
 }

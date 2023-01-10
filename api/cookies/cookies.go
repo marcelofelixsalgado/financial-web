@@ -1,57 +1,87 @@
 package cookies
 
 import (
-	"marcelofelixsalgado/financial-web/configs"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
 	"time"
 
-	"github.com/gorilla/securecookie"
+	"github.com/labstack/echo/v4"
+	"github.com/meehow/securebytes"
 )
 
-var secureCookie *securecookie.SecureCookie
+type Session struct {
+	UserID string
+	Token  string
+}
+
+var secureCookie *securebytes.SecureBytes
 
 // Uses the environment variables to create a SecureCookie
 func Configure() {
-	secureCookie = securecookie.New(configs.HashKey, configs.BlockKey)
+	// secureCookie = securecookie.New("session", settings.Config.HashKey)
+	secureCookie = securebytes.New(settings.Config.HashKey, securebytes.ASN1Serializer{})
 }
 
 // Register authentication information
-func Save(w http.ResponseWriter, userID, accessToken string) error {
+func Save(ctx echo.Context, userID, accessToken string) error {
 
-	data := map[string]string{
-		"id":    userID,
-		"token": accessToken,
+	session := Session{
+		UserID: userID,
+		Token:  accessToken,
 	}
 
-	encodedData, err := secureCookie.Encode("data", data)
+	encriptedData, err := secureCookie.EncryptToBase64(session)
 	if err != nil {
 		return err
 	}
 
-	http.SetCookie(w, &http.Cookie{
+	cookie := &http.Cookie{
 		Name:     "data",
-		Value:    encodedData,
+		Value:    encriptedData,
 		Path:     "/",
 		HttpOnly: true,
-	})
+	}
+	http.SetCookie(ctx.Response(), cookie)
+
+	// encodedData, err := secureCookie.Encode("data", data)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:     "data",
+	// 	Value:    encodedData,
+	// 	Path:     "/",
+	// 	HttpOnly: true,
+	// })
 
 	return nil
 }
 
 // Return data stored in the cookie
-func Read(r *http.Request) (map[string]string, error) {
+func Read(ctx echo.Context) (Session, error) {
 	// read the cookie
-	cookie, err := r.Cookie("data")
-	if err != nil {
-		return nil, err
-	}
+	// cookie, err := ctx.Cookie("data")
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// decode the data from the cookie
-	values := make(map[string]string)
-	if err = secureCookie.Decode("data", cookie.Value, &values); err != nil {
-		return nil, err
+	// values := make(map[string]string)
+	// if err = secureCookie.Decode("data", cookie.Value, &values); err != nil {
+	// 	return nil, err
+	// }
+
+	var session Session
+	cookie, err := ctx.Request().Cookie("data")
+	if err != nil {
+		return Session{}, err
 	}
-	return values, nil
+	if err = secureCookie.DecryptBase64(cookie.Value, &session); err != nil {
+		return Session{}, err
+	}
+
+	return session, nil
 }
 
 // Remove cookie stored values

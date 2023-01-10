@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ICreatePeriodUseCase interface {
-	Execute(InputCreatePeriodDto, *http.Request) (OutputCreatePeriodDto, faults.IFaultMessage, int, error)
+	Execute(InputCreatePeriodDto, echo.Context) (OutputCreatePeriodDto, faults.IFaultMessage, int, error)
 }
 
 type CreatePeriodUseCase struct {
@@ -21,7 +23,7 @@ func NewCreatePeriodUseCase() ICreatePeriodUseCase {
 	return &CreatePeriodUseCase{}
 }
 
-func (createPeriodUseCase *CreatePeriodUseCase) Execute(input InputCreatePeriodDto, request *http.Request) (OutputCreatePeriodDto, faults.IFaultMessage, int, error) {
+func (createPeriodUseCase *CreatePeriodUseCase) Execute(input InputCreatePeriodDto, ctx echo.Context) (OutputCreatePeriodDto, faults.IFaultMessage, int, error) {
 
 	var outputCreatePeriodDto OutputCreatePeriodDto
 	period, err := json.Marshal(input)
@@ -29,8 +31,8 @@ func (createPeriodUseCase *CreatePeriodUseCase) Execute(input InputCreatePeriodD
 		return OutputCreatePeriodDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/periods", configs.PeriodApiURL)
-	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, period, true)
+	url := fmt.Sprintf("%s/v1/periods", settings.Config.PeriodApiURL)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodPost, url, period, true)
 	if err != nil {
 		return OutputCreatePeriodDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}

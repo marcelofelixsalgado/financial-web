@@ -4,7 +4,6 @@ import (
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
 )
 
@@ -38,20 +37,6 @@ func ValidateUpdateRequestBody(inputUpdateUserCredentialsDto update.InputUpdateU
 
 	if inputUpdateUserCredentialsDto.CurrentPassword == "" {
 		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "current_password", "")
-	}
-
-	return responseMessage
-}
-
-func ValidateLoginRequestBody(inputUserLoginDto login.InputUserLoginDto) *responses.ResponseMessage {
-	responseMessage := responses.NewResponseMessage()
-
-	if inputUserLoginDto.Email == "" {
-		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "email", "")
-	}
-
-	if inputUserLoginDto.Password == "" {
-		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "password", "")
 	}
 
 	return responseMessage

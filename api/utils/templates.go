@@ -1,20 +1,25 @@
 package utils
 
 import (
-	"net/http"
+	"io"
 	"text/template"
+
+	"github.com/labstack/echo/v4"
 )
 
-var templates *template.Template
-
-func LoadTemplates() {
-	templates = template.Must(template.ParseGlob("web/views/*.html"))
-	templates = template.Must(templates.ParseGlob("web/views/templates/*.html"))
+type Template struct {
+	templates *template.Template
 }
 
-func ExecuteTemplate(w http.ResponseWriter, template string, data interface{}) {
-	err := templates.ExecuteTemplate(w, template, data)
-	if err != nil {
-		panic(err)
+// var templates *template.Template
+
+func LoadTemplates() *Template {
+	return &Template{
+		templates: template.Must(template.ParseGlob("web/views/*.html")),
+		// templates: template.Must(template.ParseGlob("web/views/templates/*.html")),
 	}
+}
+
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
 }

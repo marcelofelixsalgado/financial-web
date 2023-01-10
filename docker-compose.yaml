@@ -8,6 +8,7 @@ services:
       context: .
     image: marcelofelixsalgado/financial-web
     container_name: financial-web
+    entrypoint: /financial-web
     ports: 
       - "8080:8080"
     networks: 
@@ -15,4 +16,5 @@ services:
 
 networks: 
   financial-network:
+    name: financial-network
     driver: bridge

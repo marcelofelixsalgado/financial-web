@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IUpdateUseCase interface {
-	Execute(InputUpdateUserCredentialsDto, *http.Request) (OutputUpdateUserCredentialsDto, faults.IFaultMessage, int, error)
+	Execute(InputUpdateUserCredentialsDto, echo.Context) (OutputUpdateUserCredentialsDto, faults.IFaultMessage, int, error)
 }
 
 type UpdateUseCase struct {
@@ -21,7 +23,7 @@ func NewUpdateUseCase() IUpdateUseCase {
 	return &UpdateUseCase{}
 }
 
-func (UpdateUseCase *UpdateUseCase) Execute(input InputUpdateUserCredentialsDto, request *http.Request) (OutputUpdateUserCredentialsDto, faults.IFaultMessage, int, error) {
+func (UpdateUseCase *UpdateUseCase) Execute(input InputUpdateUserCredentialsDto, ctx echo.Context) (OutputUpdateUserCredentialsDto, faults.IFaultMessage, int, error) {
 
 	var outputUpdateUserCredentialsDto OutputUpdateUserCredentialsDto
 	user, err := json.Marshal(input)
@@ -29,8 +31,8 @@ func (UpdateUseCase *UpdateUseCase) Execute(input InputUpdateUserCredentialsDto,
 		return OutputUpdateUserCredentialsDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/users/%s/credentials", configs.UserApiURL, input.UserId)
-	response, err := requests.MakeUpstreamRequest(request, http.MethodPut, url, user, true)
+	url := fmt.Sprintf("%s/v1/users/%s/credentials", settings.Config.UserApiURL, input.UserId)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodPut, url, user, true)
 	if err != nil {
 		return OutputUpdateUserCredentialsDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}

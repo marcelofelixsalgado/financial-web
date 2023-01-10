@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+var userBasepath = "/users"
+
 type UserRoutes struct {
 	userHandler IUserHandler
 }
@@ -15,16 +17,10 @@ func NewUserRoutes(userHandler IUserHandler) UserRoutes {
 	}
 }
 
-func (userRoutes *UserRoutes) UserRouteMapping() []controllers.Route {
-	return []controllers.Route{
+func (userRoutes *UserRoutes) UserRouteMapping() (string, []controllers.Route) {
+	return userBasepath, []controllers.Route{
 		{
-			URI:                    "/register",
-			Method:                 http.MethodGet,
-			Function:               userRoutes.userHandler.LoadUserRegisterPage,
-			RequiresAuthentication: false,
-		},
-		{
-			URI:                    "/users",
+			URI:                    "",
 			Method:                 http.MethodPost,
 			Function:               userRoutes.userHandler.CreateUser,
 			RequiresAuthentication: false,
@@ -42,13 +38,13 @@ func (userRoutes *UserRoutes) UserRouteMapping() []controllers.Route {
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    "/users",
+			URI:                    "",
 			Method:                 http.MethodPut,
 			Function:               userRoutes.userHandler.UpdateUser,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    "/users",
+			URI:                    "",
 			Method:                 http.MethodDelete,
 			Function:               userRoutes.userHandler.DeleteUser,
 			RequiresAuthentication: true,

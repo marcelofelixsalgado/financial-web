@@ -49,13 +49,13 @@ function updatePassword(event) {
         url: "/register/credentials",
         method: "PUT",
         data: {
-            current_password: $('#current_password').val(),
-            new_password: $('#new_password').val()
+            current_password: $('#currentPassword').val(),
+            new_password: $('#newPassword').val()
         }
     }).done(function() {
         Swal.fire("Sucesso!", "A senha foi atualizada com sucesso!", "success")
             .then(function() {
-                window.location = "/profile";
+                window.location = "/users/profile";
             })
     }).fail(function() {
         Swal.fire("Ops...", "Erro ao atualizar a senha!", "error");

@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IFindPeriodUseCase interface {
-	Execute(InputFindPeriodDto, *http.Request) (OutputFindPeriodDto, faults.IFaultMessage, int, error)
+	Execute(InputFindPeriodDto, echo.Context) (OutputFindPeriodDto, faults.IFaultMessage, int, error)
 }
 
 type FindPeriodUseCase struct {
@@ -21,7 +23,7 @@ func NewFindPeriodUseCase() IFindPeriodUseCase {
 	return &FindPeriodUseCase{}
 }
 
-func (FindPeriodUseCase *FindPeriodUseCase) Execute(input InputFindPeriodDto, request *http.Request) (OutputFindPeriodDto, faults.IFaultMessage, int, error) {
+func (FindPeriodUseCase *FindPeriodUseCase) Execute(input InputFindPeriodDto, ctx echo.Context) (OutputFindPeriodDto, faults.IFaultMessage, int, error) {
 
 	var outputFindPeriodDto OutputFindPeriodDto
 	period, err := json.Marshal(input)
@@ -29,8 +31,8 @@ func (FindPeriodUseCase *FindPeriodUseCase) Execute(input InputFindPeriodDto, re
 		return OutputFindPeriodDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/periods/%s", configs.PeriodApiURL, input.Id)
-	response, err := requests.MakeUpstreamRequest(request, http.MethodGet, url, period, true)
+	url := fmt.Sprintf("%s/v1/periods/%s", settings.Config.PeriodApiURL, input.Id)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodGet, url, period, true)
 	if err != nil {
 		return OutputFindPeriodDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}

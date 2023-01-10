@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ICreateUseCase interface {
-	Execute(InputCreateUserCredentialsDto, *http.Request) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error)
+	Execute(InputCreateUserCredentialsDto, echo.Context) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error)
 }
 
 type CreateUseCase struct {
@@ -21,7 +23,7 @@ func NewCreateUseCase() ICreateUseCase {
 	return &CreateUseCase{}
 }
 
-func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto, request *http.Request) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error) {
+func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto, ctx echo.Context) (OutputCreateUserCredentialsDto, faults.IFaultMessage, int, error) {
 
 	var outputCreateUserCredentialsDto OutputCreateUserCredentialsDto
 	user, err := json.Marshal(input)
@@ -29,8 +31,8 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto,
 		return OutputCreateUserCredentialsDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/users/%s/credentials", configs.UserApiURL, input.UserId)
-	response, err := requests.MakeUpstreamRequest(request, http.MethodPost, url, user, false)
+	url := fmt.Sprintf("%s/v1/users/%s/credentials", settings.Config.UserApiURL, input.UserId)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodPost, url, user, false)
 	if err != nil {
 		return OutputCreateUserCredentialsDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}

@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+var periodsBasepath = "/periods"
+
 type PeriodRoutes struct {
 	periodHandler IPeriodHandler
 }
@@ -15,35 +17,35 @@ func NewPeriodRoutes(periodHandler IPeriodHandler) PeriodRoutes {
 	}
 }
 
-func (periodRoutes *PeriodRoutes) PeriodRouteMapping() []controllers.Route {
+func (periodRoutes *PeriodRoutes) PeriodRouteMapping() (string, []controllers.Route) {
 
-	return []controllers.Route{
+	return periodsBasepath, []controllers.Route{
 		{
-			URI:                    "/periods",
+			URI:                    "",
 			Method:                 http.MethodGet,
 			Function:               periodRoutes.periodHandler.ListPeriod,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    "/periods",
+			URI:                    "",
 			Method:                 http.MethodPost,
 			Function:               periodRoutes.periodHandler.CreatePeriod,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    "/periods/{id}",
+			URI:                    "/:id",
 			Method:                 http.MethodGet,
 			Function:               periodRoutes.periodHandler.FindPeriod,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    "/periods/{id}",
+			URI:                    "/:id",
 			Method:                 http.MethodPut,
 			Function:               periodRoutes.periodHandler.UpdatePeriod,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    "/periods/{id}",
+			URI:                    "/:id",
 			Method:                 http.MethodDelete,
 			Function:               periodRoutes.periodHandler.DeletePeriod,
 			RequiresAuthentication: true,

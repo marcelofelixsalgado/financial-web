@@ -34,7 +34,7 @@ function updateUser(evento) {
     }).done(function() {
         Swal.fire("Sucesso!", "Usuário atualizado com sucesso!", "success")
             .then(function() {
-                window.location = "/profile";
+                window.location = "/users/profile";
             });
     }).fail(function() {
         Swal.fire("Ops...", "Erro ao atualizar o usuário!", "error");

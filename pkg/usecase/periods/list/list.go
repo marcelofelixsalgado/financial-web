@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IListPeriodUseCase interface {
-	Execute(InputListPeriodDto, *http.Request) (OutputListPeriodDto, faults.IFaultMessage, int, error)
+	Execute(InputListPeriodDto, echo.Context) (OutputListPeriodDto, faults.IFaultMessage, int, error)
 }
 
 type ListPeriodUseCase struct {
@@ -21,7 +23,7 @@ func NewListPeriodUseCase() IListPeriodUseCase {
 	return &ListPeriodUseCase{}
 }
 
-func (ListPeriodUseCase *ListPeriodUseCase) Execute(input InputListPeriodDto, request *http.Request) (OutputListPeriodDto, faults.IFaultMessage, int, error) {
+func (ListPeriodUseCase *ListPeriodUseCase) Execute(input InputListPeriodDto, ctx echo.Context) (OutputListPeriodDto, faults.IFaultMessage, int, error) {
 
 	var periods []Period
 
@@ -30,9 +32,9 @@ func (ListPeriodUseCase *ListPeriodUseCase) Execute(input InputListPeriodDto, re
 		return OutputListPeriodDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/periods", configs.PeriodApiURL)
+	url := fmt.Sprintf("%s/v1/periods", settings.Config.PeriodApiURL)
 
-	response, err := requests.MakeUpstreamRequest(request, http.MethodGet, url, period, true)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodGet, url, period, true)
 	if err != nil {
 		return OutputListPeriodDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}

@@ -1,22 +1,26 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"net/http"
-
-	"github.com/gorilla/mux"
-
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
+	"marcelofelixsalgado/financial-web/api/controllers/login"
 	"marcelofelixsalgado/financial-web/api/controllers/logout"
 	"marcelofelixsalgado/financial-web/api/controllers/period"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"marcelofelixsalgado/financial-web/api/routes"
 	"marcelofelixsalgado/financial-web/api/utils"
-	"marcelofelixsalgado/financial-web/configs"
+	"marcelofelixsalgado/financial-web/commons/logger"
+	"marcelofelixsalgado/financial-web/settings"
+	"os"
+	"os/signal"
+	"syscall"
+	"text/template"
+	"time"
 
 	userCreate "marcelofelixsalgado/financial-web/pkg/usecase/user/create"
 	userDelete "marcelofelixsalgado/financial-web/pkg/usecase/user/delete"
@@ -32,18 +36,62 @@ import (
 	periodFind "marcelofelixsalgado/financial-web/pkg/usecase/periods/find"
 	periodList "marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
 	periodUpdate "marcelofelixsalgado/financial-web/pkg/usecase/periods/update"
+
+	logs "marcelofelixsalgado/financial-web/commons/logger"
+
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
+
+	"github.com/labstack/echo/v4"
 )
 
-func NewServer() *mux.Router {
-	// Load environment variables
-	configs.Load()
+// Server this is responsible for running an http server
+type Server struct {
+	http   *echo.Echo
+	routes *routes.Routes
+	stop   chan struct{}
+}
 
-	// Load HTML templates
-	utils.LoadTemplates()
+func NewServer() *Server {
+	// Load environment variables
+	settings.Load()
+
+	server := &Server{
+		stop: make(chan struct{}),
+	}
 
 	// Configure cookies
 	cookies.Configure()
 
+	return server
+}
+
+// Run is the procedure main for start the application
+func (s *Server) Run() {
+	s.startServer()
+	<-s.stop
+}
+
+type TemplateRenderer struct {
+	templates *template.Template
+}
+
+func (server *Server) startServer() {
+	go server.watchStop()
+
+	server.http = echo.New()
+	logger := logs.GetLogger()
+	logger.Infof("Server is starting now in %s.", settings.Config.Environment)
+
+	// Load HTML templates
+	server.http.Renderer = utils.LoadTemplates()
+
+	// Setup static files (*.js *.css)
+	server.http.Static("/web/assets/", "web/assets/")
+
+	// Middlewares
+	server.http.Use(echoMiddleware.Logger())
+
+	loginRoutes := setupLoginRoutes()
 	userCredentialsRoutes := setupUserCredentialsRoutes()
 	userRoutes := setupUserRoutes()
 	homeRoutes := setupHomeRoutes()
@@ -52,17 +100,53 @@ func NewServer() *mux.Router {
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, logoutRoutes, healthRoutes)
+	routes := routes.NewRoutes(loginRoutes, userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, logoutRoutes, healthRoutes)
 
-	router := routes.SetupRoutes()
-	return router
+	routes.RouteMapping(server.http)
+
+	server.routes = routes
+
+	showRoutes(server.http)
+
+	addr := fmt.Sprintf(":%v", settings.Config.WebHttpPort)
+	go func() {
+		if err := server.http.Start(addr); err != nil {
+			log.Printf("Shutting down the server now")
+		}
+	}()
 }
 
-func Run(router *mux.Router) {
-	port := fmt.Sprintf(":%d", configs.WebHttpPort)
+// watchStop wait for the interrupt signal.
+func (server *Server) watchStop() {
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	log.Println(<-stop)
+	server.stopServer()
+}
 
-	log.Printf("Listening on port %s\n", port)
-	log.Fatal(http.ListenAndServe(port, router))
+// stopServer stops the server http
+func (s *Server) stopServer() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(settings.Config.ServerCloseWait))
+	defer cancel()
+
+	logger := logs.GetLogger()
+	logger.Info("Server is stoping...")
+	s.http.Shutdown(ctx)
+	close(s.stop)
+}
+
+func setupLoginRoutes() login.LoginRoutes {
+
+	// setup Use Cases (services)
+	loginUseCase := userCredentialsLogin.NewLoginUseCase()
+
+	// setup router handlers
+	loginHandler := login.NewLoginHandler(loginUseCase)
+
+	// setup routes
+	loginRoutes := login.NewLoginRoutes(loginHandler)
+
+	return loginRoutes
 }
 
 func setupUserRoutes() user.UserRoutes {
@@ -145,4 +229,17 @@ func setupHealthRoutes() health.HealthRoutes {
 	healthRoutes := health.NewHealthRoutes(healthHandler)
 
 	return healthRoutes
+}
+
+func showRoutes(e *echo.Echo) {
+	var routes = e.Routes()
+	logger := logger.GetLogger()
+
+	if len(routes) > 0 {
+		for _, route := range routes {
+			// if strings.Contains(route.Name, "forklift-api") {
+			logger.Infof("%6s: %s \n", route.Method, route.Path)
+			// }
+		}
+	}
 }

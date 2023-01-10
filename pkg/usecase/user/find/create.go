@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IFindUseCase interface {
-	Execute(InputFindUserDto, *http.Request) (OutputFindUserDto, faults.IFaultMessage, int, error)
+	Execute(InputFindUserDto, echo.Context) (OutputFindUserDto, faults.IFaultMessage, int, error)
 }
 
 type FindUseCase struct {
@@ -21,7 +23,7 @@ func NewFindUseCase() IFindUseCase {
 	return &FindUseCase{}
 }
 
-func (FindUseCase *FindUseCase) Execute(input InputFindUserDto, request *http.Request) (OutputFindUserDto, faults.IFaultMessage, int, error) {
+func (FindUseCase *FindUseCase) Execute(input InputFindUserDto, ctx echo.Context) (OutputFindUserDto, faults.IFaultMessage, int, error) {
 
 	var outputFindUserDto OutputFindUserDto
 	user, err := json.Marshal(input)
@@ -29,8 +31,8 @@ func (FindUseCase *FindUseCase) Execute(input InputFindUserDto, request *http.Re
 		return OutputFindUserDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/users/%s", configs.UserApiURL, input.Id)
-	response, err := requests.MakeUpstreamRequest(request, http.MethodGet, url, user, true)
+	url := fmt.Sprintf("%s/v1/users/%s", settings.Config.UserApiURL, input.Id)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodGet, url, user, true)
 	if err != nil {
 		return OutputFindUserDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}

@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/configs"
 	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
 	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IDeleteUseCase interface {
-	Execute(InputDeleteUserDto, *http.Request) (OutputDeleteUserDto, faults.IFaultMessage, int, error)
+	Execute(InputDeleteUserDto, echo.Context) (OutputDeleteUserDto, faults.IFaultMessage, int, error)
 }
 
 type DeleteUseCase struct {
@@ -21,12 +23,12 @@ func NewDeleteUseCase() IDeleteUseCase {
 	return &DeleteUseCase{}
 }
 
-func (DeleteUseCase *DeleteUseCase) Execute(input InputDeleteUserDto, request *http.Request) (OutputDeleteUserDto, faults.IFaultMessage, int, error) {
+func (DeleteUseCase *DeleteUseCase) Execute(input InputDeleteUserDto, ctx echo.Context) (OutputDeleteUserDto, faults.IFaultMessage, int, error) {
 
 	var outputDeleteUserDto OutputDeleteUserDto
 
-	url := fmt.Sprintf("%s/v1/users/%s", configs.UserApiURL, input.Id)
-	response, err := requests.MakeUpstreamRequest(request, http.MethodDelete, url, nil, true)
+	url := fmt.Sprintf("%s/v1/users/%s", settings.Config.UserApiURL, input.Id)
+	response, err := requests.MakeUpstreamRequest(ctx, http.MethodDelete, url, nil, true)
 	if err != nil {
 		return OutputDeleteUserDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
