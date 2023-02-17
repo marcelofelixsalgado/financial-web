@@ -4,66 +4,48 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Financial App</title>
-
-        <style>
-            h2 {
-                color: #c9c9c9;
-                font-size: 22px;
-                font-family: Arial, Helvetica, sans-serif;
-            }
-            h3 {
-                color: gray;
-                font-size: 16px;
-                font-family: Arial, Helvetica, sans-serif;
-            }            
-            th, td {
-             padding: 5px;
-             font-family: Arial, Helvetica, sans-serif; 
-             font-size:small;
-            }
-            th {
-                text-align: center; 
-                background-color: rgb(143, 172, 218);
-            }
-            p {
-                font-family: Arial, Helvetica, sans-serif; 
-                font-size:small;
-            }
-        </style>
+        <link href="/web/assets/css/bootstrap.css" rel="stylesheet" />
     </head>
     <body>
-        <h2>Financial App</h2>
-        <h3>{{.Title}}</h3>
+        {{ template "header" }}
+                
 
-        <table style="border-width: 1; border-collapse: collapse;" width="500px" cellpadding="1">
-            <tr>
-                <th>Despesa</th>
-                <th>Limite mensal</th>
-                <th>Gasto real</th>
-                <th>Diferença</th>
-            </tr>
-            {{$odd := true}}
-            {{range .Balances}}
-                {{if $odd}}
-                    <tr style="background-color: #ededed;">
-                {{else}}
-                    <tr style="background-color: white;"></tr>
+        <div class="table-responsive-md">
+          <table class="table table-hover table-striped caption-top">
+            <caption>Despesas variáveis</caption>
+            <thead class="table-light">
+              <tr class="table-secondary text-center">
+                <th scope="col">&nbsp;</th>
+                <th scope="col">Despesa</th>
+                <th scope="col">Gasto real</th>
+                <th scope="col">Limite mensal</th>
+                <th scope="col">Diferença</th>
+                <th scope="col">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {{range .Balances}}
+              <tr>
+                <th scope="row">&nbsp;</th>
+                <th scope="row">{{.CategoryId}}</th>
+                <td class="text-primary text-end">{{.ActualAmount}}</td>
+                <td class="text-secondary text-end">{{.LimitAmount}}</td>
+                {{ if .DifferenceNegative }}
+                    <td class="text-danger text-end">{{.DifferenceAmount}}</td>
+                {{ else }}    
+                    <td class="text-end">{{.DifferenceAmount}}</td>
+                {{ end }}
+                <th scope="row">&nbsp;</th>
+              </tr>
                 {{end}}
-                {{$odd = not $odd}}                
-                    <td style="width: 140px;">{{.Name}}</td>
-                    <td style="width: 120px;text-align: right; color: gray;">{{.Limit}}</td>
-                    <td style="width: 120px;text-align: right;">{{.Actual}}</td>
-                    <td style="width: 120px;text-align: right;">{{.Difference}}</td>
-                </tr>
-            {{end}}
-            <tr style="background-color: rgb(187, 212, 187)">
-                <td style="width: 140px">{{.Total.Name}}</td>
-                <td style="width: 120px;text-align: right; color: gray;">{{.Total.Limit}}</td>
-                <td style="width: 120px;text-align: right;">{{.Total.Actual}}</td>
-                <td style="width: 120px;text-align: right;">{{.Total.Difference}}</td>
-            </tr>
-        </table>        
-        <p><i>Atualizado em: {{.UpdatedAt}}</i></p>
-        <p><a href="/">Voltar</a></p>
+            </tbody>
+          </table>         
+          
+        </div>
+            
+                
+
+        {{ template "footer" }}
+        {{ template "scripts" }}
     </body>
 </html>

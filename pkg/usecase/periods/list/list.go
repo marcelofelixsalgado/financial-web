@@ -23,7 +23,7 @@ func NewListPeriodUseCase() IListPeriodUseCase {
 	return &ListPeriodUseCase{}
 }
 
-func (ListPeriodUseCase *ListPeriodUseCase) Execute(input InputListPeriodDto, ctx echo.Context) (OutputListPeriodDto, faults.IFaultMessage, int, error) {
+func (listPeriodUseCase *ListPeriodUseCase) Execute(input InputListPeriodDto, ctx echo.Context) (OutputListPeriodDto, faults.IFaultMessage, int, error) {
 
 	var periods []Period
 

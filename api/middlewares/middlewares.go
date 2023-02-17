@@ -19,14 +19,3 @@ func Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(ctx)
 	}
 }
-
-// func Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-// 		if err := auth.ValidateToken(c.Request()); err != nil {
-// 			log.Printf("Token validation error: %v", err)
-// 			responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.NotAuthorized)
-// 			return c.JSON(responseMessage.HttpStatusCode, responseMessage)
-// 		}
-// 		return next(c)
-// 	}
-// }

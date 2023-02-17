@@ -24,6 +24,9 @@ type ConfigType struct {
 	// Period API address and port
 	PeriodApiURL string `env:"PERIOD_API_URL"`
 
+	// Balance API address and port
+	BalanceApiURL string `env:"BALANCE_API_URL"`
+
 	// Used to authenticate the cookie
 	HashKey []byte `env:"HASH_KEY"`
 

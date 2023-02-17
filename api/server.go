@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"marcelofelixsalgado/financial-web/api/controllers/balance"
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
 	"marcelofelixsalgado/financial-web/api/controllers/home"
@@ -36,6 +37,8 @@ import (
 	periodFind "marcelofelixsalgado/financial-web/pkg/usecase/periods/find"
 	periodList "marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
 	periodUpdate "marcelofelixsalgado/financial-web/pkg/usecase/periods/update"
+
+	balanceList "marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
 
 	logs "marcelofelixsalgado/financial-web/commons/logger"
 
@@ -96,11 +99,12 @@ func (server *Server) startServer() {
 	userRoutes := setupUserRoutes()
 	homeRoutes := setupHomeRoutes()
 	periodRoutes := setupPeriodRoutes()
+	balanceRoutes := setupBalanceRoutes()
 	logoutRoutes := setupLogoutRoutes()
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(loginRoutes, userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, logoutRoutes, healthRoutes)
+	routes := routes.NewRoutes(loginRoutes, userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, balanceRoutes, logoutRoutes, healthRoutes)
 
 	routes.RouteMapping(server.http)
 
@@ -198,6 +202,19 @@ func setupPeriodRoutes() period.PeriodRoutes {
 	periodRoutes := period.NewPeriodRoutes(periodHandler)
 
 	return periodRoutes
+}
+
+func setupBalanceRoutes() balance.BalanceRoutes {
+	// setup Use Cases (services)
+	listUseCase := balanceList.NewListBalanceUseCase()
+
+	// setup router handlers
+	balanceHandler := balance.NewBalanceHandler(listUseCase)
+
+	// setup routes
+	balanceRoutes := balance.NewBalanceRoutes(balanceHandler)
+
+	return balanceRoutes
 }
 
 func setupHomeRoutes() home.HomeRoutes {
