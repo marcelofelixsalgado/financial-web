@@ -58,8 +58,19 @@ func (listBalanceUseCase *ListBalanceUseCase) Execute(input InputListBalanceDto,
 		return OutputListBalanceDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
+	var actualAmountTotal float32
+	var limitAmountTotal float32
+	for _, balance := range balances {
+		actualAmountTotal += balance.ActualAmount
+		limitAmountTotal += balance.LimitAmount
+	}
+
 	outputListBalanceDto := OutputListBalanceDto{
 		Balances: balances,
+		BalanceTotal: BalanceTotal{
+			ActualAmount: actualAmountTotal,
+			LimitAmount:  limitAmountTotal,
+		},
 	}
 
 	return outputListBalanceDto, faults.FaultMessage{}, response.StatusCode, nil

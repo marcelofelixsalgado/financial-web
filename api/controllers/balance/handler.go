@@ -31,6 +31,13 @@ type OutputBalance struct {
 	DifferenceNegative bool
 }
 
+type OutputBalanceTotal struct {
+	ActualAmount       string
+	LimitAmount        string
+	DifferenceAmount   string
+	DifferenceNegative bool
+}
+
 func NewBalanceHandler(listBalanceUseCase list.IListBalanceUseCase) IBalanceHandler {
 	return &BalanceHandler{
 		listBalanceUseCase: listBalanceUseCase,
@@ -55,7 +62,7 @@ func (balanceHandler *BalanceHandler) ListBalance(ctx echo.Context) error {
 	}
 
 	p := message.NewPrinter(language.BrazilianPortuguese)
-	var result []OutputBalance
+	var outputBalance []OutputBalance
 	for _, balance := range output.Balances {
 
 		balanceDto := OutputBalance{
@@ -67,17 +74,26 @@ func (balanceHandler *BalanceHandler) ListBalance(ctx echo.Context) error {
 			DifferenceAmount:   p.Sprintf("%.2f", balance.LimitAmount-balance.ActualAmount),
 			DifferenceNegative: ((balance.LimitAmount - balance.ActualAmount) < 0),
 		}
-		result = append(result, balanceDto)
+		outputBalance = append(outputBalance, balanceDto)
 	}
 
-	sort.SliceStable(result, func(i, j int) bool {
-		return result[i].CategoryId < result[j].CategoryId
+	outputBalanceTotal := OutputBalanceTotal{
+		ActualAmount:       p.Sprintf("%.2f", output.BalanceTotal.ActualAmount),
+		LimitAmount:        p.Sprintf("%.2f", output.BalanceTotal.LimitAmount),
+		DifferenceAmount:   p.Sprintf("%.2f", output.BalanceTotal.LimitAmount-output.BalanceTotal.ActualAmount),
+		DifferenceNegative: ((output.BalanceTotal.LimitAmount - output.BalanceTotal.ActualAmount) < 0),
+	}
+
+	sort.SliceStable(outputBalance, func(i, j int) bool {
+		return outputBalance[i].CategoryId < outputBalance[j].CategoryId
 	})
 
 	// Response ok
 	return ctx.Render(http.StatusOK, "balance.html", struct {
 		Balances []OutputBalance
+		Total    OutputBalanceTotal
 	}{
-		Balances: result,
+		Balances: outputBalance,
+		Total:    outputBalanceTotal,
 	})
 }

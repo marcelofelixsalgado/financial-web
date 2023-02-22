@@ -17,8 +17,8 @@
               <tr class="table-secondary text-center">
                 <th scope="col">&nbsp;</th>
                 <th scope="col">Despesa</th>
-                <th scope="col">Gasto real</th>
                 <th scope="col">Limite mensal</th>
+                <th scope="col">Gasto real</th>
                 <th scope="col">Diferença</th>
                 <th scope="col">&nbsp;</th>
               </tr>
@@ -28,8 +28,8 @@
               <tr>
                 <th scope="row">&nbsp;</th>
                 <th scope="row">{{.CategoryId}}</th>
-                <td class="text-primary text-end">{{.ActualAmount}}</td>
                 <td class="text-secondary text-end">{{.LimitAmount}}</td>
+                <td class="text-primary text-end">{{.ActualAmount}}</td>
                 {{ if .DifferenceNegative }}
                     <td class="text-danger text-end">{{.DifferenceAmount}}</td>
                 {{ else }}    
@@ -38,12 +38,30 @@
                 <th scope="row">&nbsp;</th>
               </tr>
                 {{end}}
+              <tr class="table-secondary text-center">
+                <th scope="row">&nbsp;</th>
+                <th scope="row">&nbsp;</th>
+                <td class="text-secondary text-end">{{.Total.LimitAmount}}</td>
+                <td class="text-primary text-end">{{.Total.ActualAmount}}</td>
+                {{ if .Total.DifferenceNegative }}
+                    <td class="text-danger text-end">{{.Total.DifferenceAmount}}</td>
+                {{ else }}    
+                    <td class="text-end">{{.Total.DifferenceAmount}}</td>
+                {{ end }}
+                <th scope="row">&nbsp;</th>
+              </tr>
             </tbody>
           </table>         
-          
         </div>
-            
-                
+
+        <div class="table-responsive-md">
+          <table>
+              <tr class="align-bottom">
+                <td><img src="/web/charts/balance-details.png" /></td>
+                <td><img src="/web/charts/balance-total.png" /></td>
+              </tr>
+          </table>
+        </div>
 
         {{ template "footer" }}
         {{ template "scripts" }}

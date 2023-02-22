@@ -90,6 +90,7 @@ func (server *Server) startServer() {
 
 	// Setup static files (*.js *.css)
 	server.http.Static("/web/assets/", "web/assets/")
+	server.http.Static("/web/charts/", "web/charts/")
 
 	// Middlewares
 	server.http.Use(echoMiddleware.Logger())

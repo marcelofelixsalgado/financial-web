@@ -6,7 +6,8 @@ type InputListBalanceDto struct {
 }
 
 type OutputListBalanceDto struct {
-	Balances []Balance `json:"-"`
+	Balances     []Balance `json:"-"`
+	BalanceTotal BalanceTotal
 }
 
 type Balance struct {
@@ -15,4 +16,9 @@ type Balance struct {
 	CategoryId   string  `json:"category_id"`
 	ActualAmount float32 `json:"actual_amount"`
 	LimitAmount  float32 `json:"limit_amout"`
+}
+
+type BalanceTotal struct {
+	ActualAmount float32
+	LimitAmount  float32
 }
