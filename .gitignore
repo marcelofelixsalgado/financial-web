@@ -19,3 +19,6 @@ test-report.json
 
 # sonar-scanner directory
 .scannerwork/
+
+# Local environment variables
+.env
