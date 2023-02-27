@@ -1,9 +1,9 @@
 package balance
 
 import (
-	"log"
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
+	"marcelofelixsalgado/financial-web/commons/logger"
 	"marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
 	"net/http"
 	"sort"
@@ -45,19 +45,21 @@ func NewBalanceHandler(listBalanceUseCase list.IListBalanceUseCase) IBalanceHand
 }
 
 func (balanceHandler *BalanceHandler) ListBalance(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	input := list.InputListBalanceDto{}
 
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := balanceHandler.listBalanceUseCase.Execute(input, ctx)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Errorf("Error trying to convert the output to response body: %v", err)
 		responseMesage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMesage.HttpStatusCode, responseMesage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusOK && httpStatusCode != http.StatusNotFound {
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 

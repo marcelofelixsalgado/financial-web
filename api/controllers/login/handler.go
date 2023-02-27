@@ -1,10 +1,10 @@
 package login
 
 import (
-	"log"
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
+	"marcelofelixsalgado/financial-web/commons/logger"
 	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 	"net/http"
 
@@ -39,6 +39,7 @@ func (LoginHandler *LoginHandler) LoadLoginPage(ctx echo.Context) error {
 }
 
 func (LoginHandler *LoginHandler) Login(ctx echo.Context) error {
+	log := logger.GetLogger()
 
 	input := login.InputUserLoginDto{
 		Email:    ctx.FormValue("email"),
@@ -47,27 +48,27 @@ func (LoginHandler *LoginHandler) Login(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateLoginRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		log.Printf("Error validating the request body: %v", responseMessage.GetMessage())
+		log.Warnf("Error validating the request body: %v", responseMessage.GetMessage())
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := LoginHandler.loginUseCase.Execute(input, ctx)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Errorf("Error trying to convert the output to response body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Returning backend error response
 	if httpStatusCode != http.StatusOK {
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 
 	// Saving the cookie
 	if err = cookies.Save(ctx, output.User.Id, output.AccessToken); err != nil {
-		log.Printf("Error saving the cookie: %v", err)
+		log.Errorf("Error saving the cookie: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}

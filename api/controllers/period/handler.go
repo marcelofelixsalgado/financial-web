@@ -2,10 +2,10 @@ package period
 
 import (
 	"fmt"
-	"log"
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
 	"marcelofelixsalgado/financial-web/api/utils"
+	"marcelofelixsalgado/financial-web/commons/logger"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/create"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/delete"
 	"marcelofelixsalgado/financial-web/pkg/usecase/periods/find"
@@ -47,10 +47,11 @@ func NewPeriodHandler(createPeriodUseCase create.ICreatePeriodUseCase, listPerio
 }
 
 func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
 
 	year, err := strconv.Atoi(ctx.FormValue("year"))
 	if err != nil {
-		log.Printf("Error trying to convert the year in request body: %v", err)
+		log.Errorf("Error trying to convert the year in request body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -58,7 +59,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 	startDateStr := fmt.Sprintf("%s%s", ctx.FormValue("start_date"), "T00:00:00Z")
 	startDate, err := utils.ConvertStringToDateTime(startDateStr)
 	if err != nil {
-		log.Printf("Error trying to convert the StartDate at field: %v", err)
+		log.Errorf("Error trying to convert the StartDate at field: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -66,7 +67,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 	endDateStr := fmt.Sprintf("%s%s", ctx.FormValue("end_date"), "T23:59:59Z")
 	endDate, err := utils.ConvertStringToDateTime(endDateStr)
 	if err != nil {
-		log.Printf("Error trying to convert the EndDate at field: %v", err)
+		log.Errorf("Error trying to convert the EndDate at field: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -81,21 +82,21 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		log.Printf("Error validating the request body: %v", responseMessage.GetMessage())
+		log.Warnf("Error validating the request body: %v", responseMessage.GetMessage())
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := periodHandler.createPeriodUseCase.Execute(input, ctx)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Errorf("Error trying to convert the output to response body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusCreated {
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 
@@ -104,19 +105,21 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) ListPeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	input := list.InputListPeriodDto{}
 
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := periodHandler.listPeriodUseCase.Execute(input, ctx)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Errorf("Error trying to convert the output to response body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusOK && httpStatusCode != http.StatusNotFound {
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 
@@ -129,6 +132,8 @@ func (periodHandler *PeriodHandler) ListPeriod(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) FindPeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	input := find.InputFindPeriodDto{
@@ -138,14 +143,14 @@ func (periodHandler *PeriodHandler) FindPeriod(ctx echo.Context) error {
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := periodHandler.findPeriodUseCase.Execute(input, ctx)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Errorf("Error trying to convert the output to response body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusOK {
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 
@@ -154,11 +159,13 @@ func (periodHandler *PeriodHandler) FindPeriod(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	year, err := strconv.Atoi(ctx.FormValue("year"))
 	if err != nil {
-		log.Printf("Error trying to convert the year in request body: %v", err)
+		log.Errorf("Error trying to convert the year in request body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -166,7 +173,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
 	startDateStr := fmt.Sprintf("%s%s", ctx.FormValue("start_date"), "T00:00:00Z")
 	startDate, err := utils.ConvertStringToDateTime(startDateStr)
 	if err != nil {
-		log.Printf("Error trying to convert the StartDate at field: %v", err)
+		log.Errorf("Error trying to convert the StartDate at field: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -174,7 +181,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
 	endDateStr := fmt.Sprintf("%s%s", ctx.FormValue("end_date"), "T23:59:59Z")
 	endDate, err := utils.ConvertStringToDateTime(endDateStr)
 	if err != nil {
-		log.Printf("Error trying to convert the EndDate at field: %v", err)
+		log.Errorf("Error trying to convert the EndDate at field: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -191,14 +198,14 @@ func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := periodHandler.updatePeriodUseCase.Execute(input, ctx)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Errorf("Error trying to convert the output to response body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusOK {
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 
@@ -207,6 +214,8 @@ func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) DeletePeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	input := delete.InputDeletePeriodDto{
@@ -216,14 +225,14 @@ func (periodHandler *PeriodHandler) DeletePeriod(ctx echo.Context) error {
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := periodHandler.deletePeriodUseCase.Execute(input, ctx)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Errorf("Error trying to convert the output to response body: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Return error response
 	if httpStatusCode != http.StatusNoContent {
-		log.Printf("Internal error: %d %v", httpStatusCode, faultMessage)
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
 		return ctx.JSON(httpStatusCode, faultMessage)
 	}
 

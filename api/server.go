@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"fmt"
-	"log"
 	"marcelofelixsalgado/financial-web/api/controllers/balance"
 	"marcelofelixsalgado/financial-web/api/controllers/credentials"
 	"marcelofelixsalgado/financial-web/api/controllers/health"
@@ -13,6 +12,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/period"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/cookies"
+	"marcelofelixsalgado/financial-web/api/middlewares"
 	"marcelofelixsalgado/financial-web/api/routes"
 	"marcelofelixsalgado/financial-web/api/utils"
 	"marcelofelixsalgado/financial-web/commons/logger"
@@ -41,8 +41,6 @@ import (
 	balanceList "marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
 
 	logs "marcelofelixsalgado/financial-web/commons/logger"
-
-	echoMiddleware "github.com/labstack/echo/v4/middleware"
 
 	"github.com/labstack/echo/v4"
 )
@@ -93,7 +91,7 @@ func (server *Server) startServer() {
 	server.http.Static("/web/charts/", "web/charts/")
 
 	// Middlewares
-	server.http.Use(echoMiddleware.Logger())
+	server.http.Use(middlewares.Logger())
 
 	loginRoutes := setupLoginRoutes()
 	userCredentialsRoutes := setupUserCredentialsRoutes()
@@ -116,7 +114,7 @@ func (server *Server) startServer() {
 	addr := fmt.Sprintf(":%v", settings.Config.WebHttpPort)
 	go func() {
 		if err := server.http.Start(addr); err != nil {
-			log.Printf("Shutting down the server now")
+			logger.Errorf("Shutting down the server now: ", err)
 		}
 	}()
 }
@@ -125,7 +123,7 @@ func (server *Server) startServer() {
 func (server *Server) watchStop() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
-	log.Println(<-stop)
+	logger.GetLogger().Info(<-stop)
 	server.stopServer()
 }
 
