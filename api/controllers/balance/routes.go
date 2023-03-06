@@ -21,6 +21,12 @@ func (balanceRoutes *BalanceRoutes) BalanceRouteMapping() (string, []controllers
 
 	return balancesBasepath, []controllers.Route{
 		{
+			URI:                    "/periods",
+			Method:                 http.MethodGet,
+			Function:               balanceRoutes.balanceHandler.ListPeriod,
+			RequiresAuthentication: true,
+		},
+		{
 			URI:                    "",
 			Method:                 http.MethodGet,
 			Function:               balanceRoutes.balanceHandler.ListBalance,

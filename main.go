@@ -1,8 +1,6 @@
 package main
 
-import (
-	"marcelofelixsalgado/financial-web/api"
-)
+import "marcelofelixsalgado/financial-web/api"
 
 func main() {
 	// Start HTTP Server

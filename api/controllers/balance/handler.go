@@ -4,9 +4,11 @@ import (
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
 	"marcelofelixsalgado/financial-web/commons/logger"
-	"marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
 	"net/http"
 	"sort"
+
+	listBalance "marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
+	listPeriod "marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/text/language"
@@ -14,11 +16,13 @@ import (
 )
 
 type IBalanceHandler interface {
+	ListPeriod(ctx echo.Context) error
 	ListBalance(ctx echo.Context) error
 }
 
 type BalanceHandler struct {
-	listBalanceUseCase list.IListBalanceUseCase
+	listPeriodUseCase  listPeriod.IListPeriodUseCase
+	listBalanceUseCase listBalance.IListBalanceUseCase
 }
 
 type OutputBalance struct {
@@ -38,16 +42,50 @@ type OutputBalanceTotal struct {
 	DifferenceNegative bool
 }
 
-func NewBalanceHandler(listBalanceUseCase list.IListBalanceUseCase) IBalanceHandler {
+func NewBalanceHandler(listBalanceUseCase listBalance.IListBalanceUseCase, listPeriodUseCase listPeriod.IListPeriodUseCase) IBalanceHandler {
 	return &BalanceHandler{
 		listBalanceUseCase: listBalanceUseCase,
+		listPeriodUseCase:  listPeriodUseCase,
 	}
+}
+
+func (balanceHandler *BalanceHandler) ListPeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
+
+	input := listPeriod.InputListPeriodDto{}
+
+	// Calling use case
+	output, faultMessage, httpStatusCode, err := balanceHandler.listPeriodUseCase.Execute(input, ctx)
+	if err != nil {
+		log.Errorf("Error trying to convert the output to response body: %v", err)
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
+	}
+
+	// Return error response
+	if httpStatusCode != http.StatusOK && httpStatusCode != http.StatusNotFound {
+		log.Errorf("Internal error: %d %v", httpStatusCode, faultMessage)
+		return ctx.JSON(httpStatusCode, faultMessage)
+	}
+
+	// Response ok
+	return ctx.Render(http.StatusOK, "balance-period.html", struct {
+		Periods []listPeriod.Period
+	}{
+		Periods: output.Periods,
+	})
 }
 
 func (balanceHandler *BalanceHandler) ListBalance(ctx echo.Context) error {
 	log := logger.GetLogger()
 
-	input := list.InputListBalanceDto{}
+	periodId := ctx.QueryParam("period_id")
+	periodName := ctx.QueryParam("period_name")
+	periodYear := ctx.QueryParam("period_year")
+
+	input := listBalance.InputListBalanceDto{
+		PeriodId: periodId,
+	}
 
 	// Calling use case
 	output, faultMessage, httpStatusCode, err := balanceHandler.listBalanceUseCase.Execute(input, ctx)
@@ -92,10 +130,16 @@ func (balanceHandler *BalanceHandler) ListBalance(ctx echo.Context) error {
 
 	// Response ok
 	return ctx.Render(http.StatusOK, "balance.html", struct {
-		Balances []OutputBalance
-		Total    OutputBalanceTotal
+		PeriodId   string
+		PeriodName string
+		PeriodYear string
+		Balances   []OutputBalance
+		Total      OutputBalanceTotal
 	}{
-		Balances: outputBalance,
-		Total:    outputBalanceTotal,
+		PeriodId:   periodId,
+		PeriodName: periodName,
+		PeriodYear: periodYear,
+		Balances:   outputBalance,
+		Total:      outputBalanceTotal,
 	})
 }

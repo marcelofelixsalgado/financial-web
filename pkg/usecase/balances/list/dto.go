@@ -1,7 +1,6 @@
 package list
 
 type InputListBalanceDto struct {
-	TenantId string
 	PeriodId string
 }
 

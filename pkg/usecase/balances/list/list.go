@@ -32,7 +32,7 @@ func (listBalanceUseCase *ListBalanceUseCase) Execute(input InputListBalanceDto,
 		return OutputListBalanceDto{}, faults.FaultMessage{}, http.StatusInternalServerError, err
 	}
 
-	url := fmt.Sprintf("%s/v1/balances", settings.Config.BalanceApiURL)
+	url := fmt.Sprintf("%s/v1/balances?period_id=%s", settings.Config.BalanceApiURL, input.PeriodId)
 
 	response, err := requests.MakeUpstreamRequest(ctx, http.MethodGet, url, balance, true)
 	if err != nil {

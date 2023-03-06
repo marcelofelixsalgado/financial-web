@@ -205,10 +205,11 @@ func setupPeriodRoutes() period.PeriodRoutes {
 
 func setupBalanceRoutes() balance.BalanceRoutes {
 	// setup Use Cases (services)
-	listUseCase := balanceList.NewListBalanceUseCase()
+	balanceListUseCase := balanceList.NewListBalanceUseCase()
+	periodListUseCase := periodList.NewListPeriodUseCase()
 
 	// setup router handlers
-	balanceHandler := balance.NewBalanceHandler(listUseCase)
+	balanceHandler := balance.NewBalanceHandler(balanceListUseCase, periodListUseCase)
 
 	// setup routes
 	balanceRoutes := balance.NewBalanceRoutes(balanceHandler)

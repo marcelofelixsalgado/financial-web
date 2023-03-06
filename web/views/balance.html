@@ -8,18 +8,19 @@
     </head>
     <body>
         {{ template "header" }}
-                
-
+               
+        
         <div class="table-responsive-md">
           <table class="table table-hover table-striped caption-top">
             <caption>Despesas variáveis</caption>
+            <caption>{{.PeriodName}} - {{.PeriodYear}}</caption>
             <thead class="table-light">
               <tr class="table-secondary text-center">
                 <th scope="col">&nbsp;</th>
                 <th scope="col">Despesa</th>
-                <th scope="col">Limite mensal</th>
-                <th scope="col">Gasto real</th>
-                <th scope="col">Diferença</th>
+                <th scope="col" class="text-end">Limite mensal</th>
+                <th scope="col" class="text-end">Gasto real</th>
+                <th scope="col" class="text-end">Diferença</th>
                 <th scope="col">&nbsp;</th>
               </tr>
             </thead>
@@ -57,10 +58,19 @@
         <div class="table-responsive-md">
           <table>
               <tr class="align-bottom">
-                <td><img src="/web/charts/balance-details.png" /></td>
-                <td><img src="/web/charts/balance-total.png" /></td>
+                <td><img src="/web/charts/{{.PeriodId}}/balance-details.png" /></td>
+                <td><img src="/web/charts/{{.PeriodId}}/balance-total.png" /></td>
               </tr>
           </table>
+        </div>
+
+        <hr/>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <a id="back" href="/balances/periods" class="card-link">
+            <button class="btn btn-dark">
+                Voltar
+            </button>
+          </a>
         </div>
 
         {{ template "footer" }}
