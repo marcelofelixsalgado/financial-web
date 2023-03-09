@@ -5,19 +5,28 @@ type InputListBalanceDto struct {
 }
 
 type OutputListBalanceDto struct {
-	Balances     []Balance `json:"-"`
-	BalanceTotal BalanceTotal
+	Balances     []OutputBalance
+	BalanceTotal OutputBalanceTotal
 }
 
-type Balance struct {
-	Id           string  `json:"id"`
-	PeriodId     string  `json:"period_id"`
-	CategoryId   string  `json:"category_id"`
-	ActualAmount float32 `json:"actual_amount"`
-	LimitAmount  float32 `json:"limit_amout"`
+// type BalanceTotal struct {
+// 	ActualAmount float32
+// 	LimitAmount  float32
+// }
+
+type OutputBalance struct {
+	Id                 string
+	PeriodId           string
+	CategoryId         string
+	ActualAmount       string
+	LimitAmount        string
+	DifferenceAmount   string
+	DifferenceNegative bool
 }
 
-type BalanceTotal struct {
-	ActualAmount float32
-	LimitAmount  float32
+type OutputBalanceTotal struct {
+	ActualAmount       string
+	LimitAmount        string
+	DifferenceAmount   string
+	DifferenceNegative bool
 }
