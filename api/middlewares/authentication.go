@@ -1,10 +1,11 @@
 package middlewares
 
 import (
-	"marcelofelixsalgado/financial-web/api/cookies"
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/api/cookies"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
 
 	"github.com/labstack/echo/v4"
 )

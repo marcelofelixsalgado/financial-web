@@ -1,10 +1,11 @@
 package responses_test
 
 import (
-	. "marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
 	"reflect"
 	"testing"
+
+	. "github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
 )
 
 func TestGetMessages(t *testing.T) {

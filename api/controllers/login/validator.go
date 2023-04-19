@@ -1,9 +1,9 @@
 package login
 
 import (
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 )
 
 func ValidateLoginRequestBody(inputUserLoginDto login.InputUserLoginDto) *responses.ResponseMessage {

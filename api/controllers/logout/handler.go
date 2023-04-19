@@ -1,8 +1,9 @@
 package logout
 
 import (
-	"marcelofelixsalgado/financial-web/api/cookies"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/api/cookies"
 
 	"github.com/labstack/echo/v4"
 )

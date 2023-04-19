@@ -1,10 +1,10 @@
 package user
 
 import (
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/pkg/usecase/user/create"
-	"marcelofelixsalgado/financial-web/pkg/usecase/user/update"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/user/create"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/user/update"
 )
 
 type InputUserDto struct {

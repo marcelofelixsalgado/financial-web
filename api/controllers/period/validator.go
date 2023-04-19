@@ -1,10 +1,11 @@
 package period
 
 import (
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/pkg/usecase/period/create"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/period/create"
 )
 
 type InputPeriodDto struct {

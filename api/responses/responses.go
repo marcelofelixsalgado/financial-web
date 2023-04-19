@@ -3,10 +3,11 @@ package responses
 import (
 	"encoding/json"
 	"fmt"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/commons/logger"
-	"marcelofelixsalgado/financial-web/pkg/usecase/status"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/commons/logger"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/status"
 )
 
 type IResponseMessage interface {

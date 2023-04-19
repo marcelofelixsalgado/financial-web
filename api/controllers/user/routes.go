@@ -1,8 +1,9 @@
 package user
 
 import (
-	"marcelofelixsalgado/financial-web/api/controllers"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/api/controllers"
 )
 
 var userBasepath = "/users"

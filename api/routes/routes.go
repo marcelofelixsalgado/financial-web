@@ -1,17 +1,17 @@
 package routes
 
 import (
-	"marcelofelixsalgado/financial-web/api/controllers"
-	"marcelofelixsalgado/financial-web/api/controllers/balance"
-	"marcelofelixsalgado/financial-web/api/controllers/credentials"
-	"marcelofelixsalgado/financial-web/api/controllers/health"
-	"marcelofelixsalgado/financial-web/api/controllers/home"
-	"marcelofelixsalgado/financial-web/api/controllers/login"
-	"marcelofelixsalgado/financial-web/api/controllers/logout"
-	"marcelofelixsalgado/financial-web/api/controllers/period"
-	"marcelofelixsalgado/financial-web/api/controllers/transactiontype"
-	"marcelofelixsalgado/financial-web/api/controllers/user"
-	"marcelofelixsalgado/financial-web/api/middlewares"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/balance"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/credentials"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/health"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/home"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/login"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/logout"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/period"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/transactiontype"
+	"github.com/marcelofelixsalgado/financial-web/api/controllers/user"
+	"github.com/marcelofelixsalgado/financial-web/api/middlewares"
 
 	"github.com/labstack/echo/v4"
 )

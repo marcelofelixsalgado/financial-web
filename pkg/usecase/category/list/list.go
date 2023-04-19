@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
-	"marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
-	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/pkg/infrastructure/requests"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/settings"
 
 	"github.com/labstack/echo/v4"
 )

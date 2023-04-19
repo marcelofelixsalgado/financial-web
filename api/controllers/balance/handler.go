@@ -1,13 +1,14 @@
 package balance
 
 import (
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/commons/logger"
 	"net/http"
 
-	listBalance "marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
-	listPeriod "marcelofelixsalgado/financial-web/pkg/usecase/period/list"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/commons/logger"
+
+	listBalance "github.com/marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
+	listPeriod "github.com/marcelofelixsalgado/financial-web/pkg/usecase/period/list"
 
 	"github.com/labstack/echo/v4"
 )

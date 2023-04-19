@@ -1,10 +1,10 @@
 package transactiontype
 
 import (
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/commons/logger"
-	"marcelofelixsalgado/financial-web/pkg/usecase/transactiontype/list"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/commons/logger"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/transactiontype/list"
 
 	"net/http"
 

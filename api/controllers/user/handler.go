@@ -1,15 +1,16 @@
 package user
 
 import (
-	"marcelofelixsalgado/financial-web/api/cookies"
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/commons/logger"
-	"marcelofelixsalgado/financial-web/pkg/usecase/user/create"
-	"marcelofelixsalgado/financial-web/pkg/usecase/user/delete"
-	"marcelofelixsalgado/financial-web/pkg/usecase/user/find"
-	"marcelofelixsalgado/financial-web/pkg/usecase/user/update"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/api/cookies"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/commons/logger"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/user/create"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/user/delete"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/user/find"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/user/update"
 
 	"github.com/labstack/echo/v4"
 )

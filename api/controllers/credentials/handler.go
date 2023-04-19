@@ -1,14 +1,15 @@
 package credentials
 
 import (
-	"marcelofelixsalgado/financial-web/api/cookies"
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/commons/logger"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/api/cookies"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/commons/logger"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
 
 	"github.com/labstack/echo/v4"
 )

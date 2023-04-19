@@ -1,12 +1,13 @@
 package login
 
 import (
-	"marcelofelixsalgado/financial-web/api/cookies"
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/commons/logger"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-web/api/cookies"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/commons/logger"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 
 	"github.com/labstack/echo/v4"
 )

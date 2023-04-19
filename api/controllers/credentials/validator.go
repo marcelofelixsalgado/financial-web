@@ -1,10 +1,10 @@
 package credentials
 
 import (
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
-	"marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/credentials/create"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
 )
 
 func ValidateCreateRequestBody(inputCreateUserCredentialsDto create.InputCreateUserCredentialsDto) *responses.ResponseMessage {

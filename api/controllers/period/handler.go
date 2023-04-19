@@ -2,15 +2,16 @@ package period
 
 import (
 	"fmt"
-	"marcelofelixsalgado/financial-web/api/responses"
-	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/api/utils"
-	"marcelofelixsalgado/financial-web/commons/logger"
-	"marcelofelixsalgado/financial-web/pkg/usecase/period/create"
-	"marcelofelixsalgado/financial-web/pkg/usecase/period/delete"
-	"marcelofelixsalgado/financial-web/pkg/usecase/period/find"
-	"marcelofelixsalgado/financial-web/pkg/usecase/period/list"
-	"marcelofelixsalgado/financial-web/pkg/usecase/period/update"
+
+	"github.com/marcelofelixsalgado/financial-web/api/responses"
+	"github.com/marcelofelixsalgado/financial-web/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-web/api/utils"
+	"github.com/marcelofelixsalgado/financial-web/commons/logger"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/period/create"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/period/delete"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/period/find"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/period/list"
+	"github.com/marcelofelixsalgado/financial-web/pkg/usecase/period/update"
 
 	"net/http"
 	"strconv"

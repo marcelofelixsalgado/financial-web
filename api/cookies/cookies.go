@@ -1,9 +1,10 @@
 package cookies
 
 import (
-	"marcelofelixsalgado/financial-web/settings"
 	"net/http"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-web/settings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/meehow/securebytes"

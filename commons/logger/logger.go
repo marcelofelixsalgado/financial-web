@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"marcelofelixsalgado/financial-web/settings"
+	"github.com/marcelofelixsalgado/financial-web/settings"
 
-	"marcelofelixsalgado/financial-web/version"
+	"github.com/marcelofelixsalgado/financial-web/version"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
