@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.19.4-alpine
+FROM golang:1.19
 
 WORKDIR /app
 
@@ -9,7 +9,6 @@ COPY go.sum ./
 RUN go mod download
 
 COPY *.go ./
-COPY .env ./
 
 COPY api/ ./api/
 COPY commons/ ./commons/
@@ -18,8 +17,8 @@ COPY settings/ ./settings/
 COPY version/ ./version/
 COPY web/ ./web/
 
-RUN go build -o /financial-web
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /financial-web
 
 EXPOSE 8080
 
-ENTRYPOINT [ "financial-web" ]
+ENTRYPOINT [ "/financial-web" ]

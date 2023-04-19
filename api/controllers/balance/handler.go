@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	listBalance "marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
-	listPeriod "marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
+	listPeriod "marcelofelixsalgado/financial-web/pkg/usecase/period/list"
 
 	"github.com/labstack/echo/v4"
 )

@@ -10,6 +10,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/login"
 	"marcelofelixsalgado/financial-web/api/controllers/logout"
 	"marcelofelixsalgado/financial-web/api/controllers/period"
+	"marcelofelixsalgado/financial-web/api/controllers/transactiontype"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/cookies"
 	"marcelofelixsalgado/financial-web/api/middlewares"
@@ -32,11 +33,13 @@ import (
 	userCredentialsLogin "marcelofelixsalgado/financial-web/pkg/usecase/credentials/login"
 	userCredentialsUpdate "marcelofelixsalgado/financial-web/pkg/usecase/credentials/update"
 
-	periodCreate "marcelofelixsalgado/financial-web/pkg/usecase/periods/create"
-	periodDelete "marcelofelixsalgado/financial-web/pkg/usecase/periods/delete"
-	periodFind "marcelofelixsalgado/financial-web/pkg/usecase/periods/find"
-	periodList "marcelofelixsalgado/financial-web/pkg/usecase/periods/list"
-	periodUpdate "marcelofelixsalgado/financial-web/pkg/usecase/periods/update"
+	periodCreate "marcelofelixsalgado/financial-web/pkg/usecase/period/create"
+	periodDelete "marcelofelixsalgado/financial-web/pkg/usecase/period/delete"
+	periodFind "marcelofelixsalgado/financial-web/pkg/usecase/period/find"
+	periodList "marcelofelixsalgado/financial-web/pkg/usecase/period/list"
+	periodUpdate "marcelofelixsalgado/financial-web/pkg/usecase/period/update"
+
+	transactionTypeList "marcelofelixsalgado/financial-web/pkg/usecase/transactiontype/list"
 
 	balanceList "marcelofelixsalgado/financial-web/pkg/usecase/balances/list"
 
@@ -98,12 +101,13 @@ func (server *Server) startServer() {
 	userRoutes := setupUserRoutes()
 	homeRoutes := setupHomeRoutes()
 	periodRoutes := setupPeriodRoutes()
+	transactionTypeRoutes := setupTransactionTypeRoutes()
 	balanceRoutes := setupBalanceRoutes()
 	logoutRoutes := setupLogoutRoutes()
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(loginRoutes, userCredentialsRoutes, userRoutes, homeRoutes, periodRoutes, balanceRoutes, logoutRoutes, healthRoutes)
+	routes := routes.NewRoutes(loginRoutes, userCredentialsRoutes, userRoutes, homeRoutes, transactionTypeRoutes, periodRoutes, balanceRoutes, logoutRoutes, healthRoutes)
 
 	routes.RouteMapping(server.http)
 
@@ -201,6 +205,20 @@ func setupPeriodRoutes() period.PeriodRoutes {
 	periodRoutes := period.NewPeriodRoutes(periodHandler)
 
 	return periodRoutes
+}
+
+func setupTransactionTypeRoutes() transactiontype.TransactionTypeRoutes {
+
+	// setup Use Cases (services)
+	listUseCase := transactionTypeList.NewListTransactionTypeUseCase()
+
+	// setup router handlers
+	handler := transactiontype.NewTransactionTypeHandler(listUseCase)
+
+	// setup routes
+	routes := transactiontype.NewTransactionTypeRoutes(handler)
+
+	return routes
 }
 
 func setupBalanceRoutes() balance.BalanceRoutes {

@@ -3,7 +3,7 @@ package period
 import (
 	"marcelofelixsalgado/financial-web/api/responses"
 	"marcelofelixsalgado/financial-web/api/responses/faults"
-	"marcelofelixsalgado/financial-web/pkg/usecase/periods/create"
+	"marcelofelixsalgado/financial-web/pkg/usecase/period/create"
 	"time"
 )
 

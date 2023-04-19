@@ -9,6 +9,7 @@ import (
 	"marcelofelixsalgado/financial-web/api/controllers/login"
 	"marcelofelixsalgado/financial-web/api/controllers/logout"
 	"marcelofelixsalgado/financial-web/api/controllers/period"
+	"marcelofelixsalgado/financial-web/api/controllers/transactiontype"
 	"marcelofelixsalgado/financial-web/api/controllers/user"
 	"marcelofelixsalgado/financial-web/api/middlewares"
 
@@ -16,27 +17,30 @@ import (
 )
 
 type Routes struct {
-	loginRoutes          login.LoginRoutes
-	userCredentialRoutes credentials.UserCredentialsRoutes
-	userRoutes           user.UserRoutes
-	homeRoutes           home.HomeRoutes
-	periodRoutes         period.PeriodRoutes
-	balanceRoutes        balance.BalanceRoutes
-	logoutRoutes         logout.LogoutRoutes
-	healthRoutes         health.HealthRoutes
+	loginRoutes           login.LoginRoutes
+	userCredentialRoutes  credentials.UserCredentialsRoutes
+	userRoutes            user.UserRoutes
+	homeRoutes            home.HomeRoutes
+	transactionTypeRoutes transactiontype.TransactionTypeRoutes
+	periodRoutes          period.PeriodRoutes
+	balanceRoutes         balance.BalanceRoutes
+	logoutRoutes          logout.LogoutRoutes
+	healthRoutes          health.HealthRoutes
 }
 
 func NewRoutes(loginRoutes login.LoginRoutes, userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, homeRoutes home.HomeRoutes,
+	transactionTypeRoutes transactiontype.TransactionTypeRoutes,
 	periodRoutes period.PeriodRoutes, balanceRoutes balance.BalanceRoutes, logoutRoutes logout.LogoutRoutes, healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
-		loginRoutes:          loginRoutes,
-		userCredentialRoutes: userCredentialRoutes,
-		userRoutes:           userRoutes,
-		homeRoutes:           homeRoutes,
-		periodRoutes:         periodRoutes,
-		balanceRoutes:        balanceRoutes,
-		logoutRoutes:         logoutRoutes,
-		healthRoutes:         healthRoutes,
+		loginRoutes:           loginRoutes,
+		userCredentialRoutes:  userCredentialRoutes,
+		userRoutes:            userRoutes,
+		homeRoutes:            homeRoutes,
+		transactionTypeRoutes: transactionTypeRoutes,
+		periodRoutes:          periodRoutes,
+		balanceRoutes:         balanceRoutes,
+		logoutRoutes:          logoutRoutes,
+		healthRoutes:          healthRoutes,
 	}
 }
 
@@ -57,6 +61,10 @@ func (routes *Routes) RouteMapping(http *echo.Echo) {
 	// home routes
 	basePath, homeRoutes := routes.homeRoutes.HomeRouteMapping()
 	setupRoute(http, basePath, homeRoutes)
+
+	// transaction type routes
+	basePath, transactionTypeRoutes := routes.transactionTypeRoutes.TransactionTypeRouteMapping()
+	setupRoute(http, basePath, transactionTypeRoutes)
 
 	// period routes
 	basePath, periodRoutes := routes.periodRoutes.PeriodRouteMapping()

@@ -12,9 +12,9 @@ services:
     ports: 
       - "8080:8080"
     networks: 
-      - financial-network
+      - financial-web-network
 
 networks: 
-  financial-network:
-    name: financial-network
+  financial-web-network:
+    name: financial-web-network
     driver: bridge
