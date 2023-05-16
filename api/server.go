@@ -46,6 +46,7 @@ import (
 
 	logs "github.com/marcelofelixsalgado/financial-web/commons/logger"
 
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 )
 
@@ -93,6 +94,10 @@ func (server *Server) startServer() {
 	// Setup static files (*.js *.css)
 	server.http.Static("/web/assets/", "web/assets/")
 	server.http.Static("/web/charts/", "web/charts/")
+
+	// Prometheus
+	p := prometheus.NewPrometheus("echo", nil)
+	p.Use(server.http)
 
 	// Middlewares
 	server.http.Use(middlewares.Logger())
